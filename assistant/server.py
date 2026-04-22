@@ -56,8 +56,8 @@ def create_app(model: str, ollama_url: str):
 
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--host", default="127.0.0.1")
-    ap.add_argument("--port", type=int, default=7860)
+    ap.add_argument("--host", default=os.environ.get("BIND_HOST", "127.0.0.1"))
+    ap.add_argument("--port", type=int, default=int(os.environ.get("PORT", "7860")))
     ap.add_argument("--model", default=os.environ.get("NIX_ASSISTANT_MODEL", "llama3.2:1b"))
     ap.add_argument("--ollama", default=os.environ.get("OLLAMA_URL", "http://localhost:11434"))
     args = ap.parse_args(argv)
