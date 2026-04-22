@@ -1,29 +1,88 @@
 # nix-assistant
 
-An open-source assistant that helps anyone get their Nix config to work — flakes, NixOS configurations, home-manager, dev shells, derivations.
+An open-source Nix config reviewer for the whole Nix community — paste any flake, NixOS config, home-manager module, or derivation and get structured lint findings + LLM prose advice.
 
-**Positioning:** for the whole Nix community, not Xnode-specific. Hosted on a sovereign Openmesh Xnode as proof of decentralised inference; the assistant itself is general-purpose.
+**Live:** deployed on a sovereign Openmesh Xnode (xnode-1) at port 8080.
 
-**Master plan:** see [ENGINEERING/OPENXAI-NIX-RAG-PLAN.md](../ENGINEERING/OPENXAI-NIX-RAG-PLAN.md) for the full scope, phases, schema, and decision log.
+## How it works
 
-## Layout (builds out as phases complete)
+```
+Your Nix config
+      │
+      ▼
+statix + deadnix ──→ deterministic lint findings
+      │
+      ▼
+numpy cosine RAG ──→ top-5 similar nixpkgs/options docs
+      │
+      ▼
+llama3.2:1b (Ollama) ──→ prose review with line-level comments
+```
+
+- **Corpus**: 98k nixpkgs packages + 16k NixOS options scraped from nixpkgs unstable
+- **Embeddings**: nomic-embed-text (768-dim) via Ollama, stored as numpy arrays
+- **Model**: llama3.2:1b running on shared Ollama instance (no second Ollama)
+- **Lint**: statix + deadnix run deterministically before the LLM
+- **Backend**: Flask on port 5000, proxied by nginx on port 8080
+
+## Layout
 
 ```
 nix-assistant/
-├── README.md
-├── scrape/       # Phase 0 — SQLite-backed nixpkgs + community flake scraper (resumable)
-├── dataset/      # Phase 1 + 2 — HF dataset export + (intent, answer) pair generation
-├── train/        # Phase 3 — LoRA training + eval harness
-└── serve/        # Phase 4 — RAG chatbot (sibling to openmesh-support-agent)
+├── flake.nix             # NixOS module — deploys to any xnode via om CLI
+├── assistant/
+│   ├── server.py         # Flask API — POST /api/review, GET /health
+│   ├── review.py         # full pipeline: lint → retrieve → llm
+│   ├── retrieve.py       # cosine RAG over numpy embeddings
+│   ├── lint.py           # statix + deadnix runner
+│   └── embed.py          # build the numpy vector index from corpus.db
+├── scrape/
+│   ├── scrape_nixpkgs.py # scrape nixpkgs packages into corpus.db
+│   ├── scrape_options.py # scrape NixOS options into corpus.db
+│   └── export_hf.py      # export corpus.db → parquet shards for HF Hub
+└── frontend/
+    └── index.html        # cyberpunk UI (Tron/NixOS blue)
 ```
 
-Nothing built yet. Current status: planning doc awaiting decisions (§12 of the plan).
+## Deploy
 
-## Artefacts (planned)
+```bash
+# one-time: add to xnode
+om --profile hermes app deploy nix-assistant --flake "github:johnforfar/nix-assistant/v0.1.1"
 
-| Phase | Artefact | Home |
-|---|---|---|
-| 1 | `OpenxAILabs/nix-corpus` | HF dataset |
-| 2 | `OpenxAILabs/nix-instruction-pairs` | HF dataset |
-| 3 | `OpenxAILabs/nix-assistant-*` | HF model (base + per-channel LoRAs) |
-| 4 | chat site | Xnode (sibling to `openmesh-support-agent`) |
+# push data after first deploy
+scp scrape/data/corpus.db       <xnode>:/var/lib/nix-assistant/
+scp -r assistant/data/embeddings <xnode>:/var/lib/nix-assistant/
+```
+
+Requires `om` CLI authenticated against an Openmesh Xnode.
+The xnode must have a shared `hermes-ollama` container running `llama3.2:1b` and `nomic-embed-text`.
+
+## Build embeddings locally
+
+```bash
+# scrape (takes ~10 min)
+python scrape/scrape_nixpkgs.py
+python scrape/scrape_options.py
+
+# embed (requires Ollama with nomic-embed-text, resumable)
+python -m assistant.embed --db scrape/data/corpus.db --out assistant/data/embeddings
+```
+
+## API
+
+```
+POST /api/review
+  { "source": "<nix config string>" }
+  → { "comments": [{ "line": int, "severity": "error|warning|hint", "message": str }] }
+
+GET /health
+  → { "status": "ok", "model": "llama3.2:1b" }
+```
+
+## Roadmap
+
+- [ ] Export corpus to HuggingFace Hub (`OpenxAILabs/nix-corpus`)
+- [ ] Scrape nixpkgs community flakes for broader coverage
+- [ ] Upgrade to llama3.2:3b once tested on xnode-1 resources
+- [ ] PR diff mode — review only changed files
