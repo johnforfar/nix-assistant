@@ -1,0 +1,18 @@
+[project]
+name = "nix-corpus-scrape"
+version = "0.1.0"
+description = "Resumable scraper for nixpkgs derivations into SQLite, exported as HF dataset."
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+export = [
+  "pyarrow>=15.0.0",
+  "huggingface_hub>=0.23.0",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]

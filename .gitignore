@@ -1,0 +1,33 @@
+# Scraped data, SQLite corpus, nixpkgs clone
+data/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+
+# Model weights, LoRA adapters
+models/
+adapters/
+*.safetensors
+*.gguf
+*.bin
+
+# Logs
+logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Exported datasets (parquet shards are large; regenerable)
+dataset/out/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>nix-assistant — rate my Nix config</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+         background: #0f1117; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
+  h1 { font-size: 1.5rem; font-weight: 700; color: #7dd3fc; margin-bottom: .25rem; }
+  p.sub { font-size: .875rem; color: #94a3b8; margin-bottom: 1.5rem; }
+  textarea { width: 100%; height: 280px; background: #1e2433; border: 1px solid #334155;
+             border-radius: 8px; color: #e2e8f0; font-family: "JetBrains Mono", "Fira Code", monospace;
+             font-size: .85rem; padding: 1rem; resize: vertical; outline: none; }
+  textarea:focus { border-color: #7dd3fc; }
+  button { margin-top: 1rem; padding: .6rem 1.4rem; background: #0ea5e9; border: none;
+           border-radius: 6px; color: #fff; font-size: .9rem; font-weight: 600;
+           cursor: pointer; transition: background .15s; }
+  button:hover { background: #38bdf8; }
+  button:disabled { background: #334155; cursor: not-allowed; }
+  #results { margin-top: 1.5rem; }
+  .comment { display: flex; gap: .75rem; align-items: flex-start;
+             background: #1e2433; border-radius: 8px; padding: .75rem 1rem;
+             margin-bottom: .5rem; border-left: 3px solid #334155; }
+  .comment.error   { border-color: #f87171; }
+  .comment.warning { border-color: #fbbf24; }
+  .comment.hint    { border-color: #34d399; }
+  .badge { font-size: .7rem; font-weight: 700; padding: .15rem .4rem;
+           border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
+  .badge.error   { background: #7f1d1d; color: #fca5a5; }
+  .badge.warning { background: #78350f; color: #fde68a; }
+  .badge.hint    { background: #064e3b; color: #6ee7b7; }
+  .loc { font-size: .75rem; color: #64748b; flex-shrink: 0; }
+  .msg { font-size: .875rem; line-height: 1.5; }
+  .none { color: #34d399; font-size: .9rem; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #334155;
+             border-top-color: #7dd3fc; border-radius: 50%; animation: spin .6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .max-w { max-width: 860px; margin: 0 auto; }
+</style>
+</head>
+<body>
+<div class="max-w">
+  <h1>nix-assistant</h1>
+  <p class="sub">Paste a <code>flake.nix</code>, <code>configuration.nix</code>, or <code>home.nix</code> — get inline review comments.</p>
+  <textarea id="src" placeholder="{ config, pkgs, ... }:&#10;{&#10;  services.openssh.enable = true;&#10;  ...&#10;}"></textarea>
+  <button id="btn" onclick="review()">Review</button>
+  <div id="results"></div>
+</div>
+<script>
+async function review() {
+  const src = document.getElementById('src').value.trim();
+  const btn = document.getElementById('btn');
+  const out = document.getElementById('results');
+  if (!src) return;
+  btn.disabled = true;
+  out.innerHTML = '<span class="spinner"></span>';
+  try {
+    const r = await fetch('/api/review', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({source: src})
+    });
+    const data = await r.json();
+    if (data.error) {
+      const p = document.createElement('p');
+      p.style.color = '#f87171';
+      p.textContent = data.error;
+      out.innerHTML = '';
+      out.appendChild(p);
+      return;
+    }
+    const comments = data.comments || [];
+    if (!comments.length) {
+      out.innerHTML = '<p class="none">✓ No issues found.</p>';
+      return;
+    }
+    const SEVERITIES = new Set(['error', 'warning', 'hint']);
+    out.innerHTML = '';
+    comments.forEach(c => {
+      const sev = SEVERITIES.has(c.severity) ? c.severity : 'hint';
+      const div = document.createElement('div');
+      div.className = `comment ${sev}`;
+      const badge = document.createElement('span');
+      badge.className = `badge ${sev}`;
+      badge.textContent = sev;
+      div.appendChild(badge);
+      if (c.line) {
+        const loc = document.createElement('span');
+        loc.className = 'loc';
+        loc.textContent = `line ${c.line}`;
+        div.appendChild(loc);
+      }
+      const msg = document.createElement('span');
+      msg.className = 'msg';
+      msg.textContent = c.message;
+      div.appendChild(msg);
+      out.appendChild(div);
+    });
+  } catch(e) {
+    out.innerHTML = `<p style="color:#f87171">Request failed: ${e.message}</p>`;
+  } finally {
+    btn.disabled = false;
+  }
+}
+document.getElementById('src').addEventListener('keydown', e => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') review();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+[project]
+name = "nix-assistant"
+version = "0.1.0"
+description = "Rate my Nix config — local linting + RAG + small LLM review."
+requires-python = ">=3.9"
+dependencies = [
+  "numpy>=1.24",
+  "flask>=3.0",
+]
+
+[project.scripts]
+nix-assistant = "assistant.cli:main"
+nix-assistant-server = "assistant.server:main"
+nix-assistant-embed = "assistant.embed:main"
+
+[project.optional-dependencies]
+dev = ["pytest", "httpx"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
