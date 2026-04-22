@@ -80,6 +80,14 @@ GET /health
   → { "status": "ok", "model": "hermes3:3b" }
 ```
 
+## Pre-built data
+
+Embedding index (nomic-embed-text 768-dim, ~320MB) is published as a GitHub Release:
+
+**[github.com/johnforfar/nix-assistant/releases/tag/data-v1](https://github.com/johnforfar/nix-assistant/releases/tag/data-v1)**
+
+The NixOS service downloads it automatically on first boot via `ExecStartPre`. You don't need to push anything manually.
+
 ## Roadmap
 
 - [ ] Export corpus to HuggingFace Hub (`OpenxAILabs/nix-corpus`)
