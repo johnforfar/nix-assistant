@@ -16,12 +16,12 @@ statix + deadnix ──→ deterministic lint findings
 numpy cosine RAG ──→ top-5 similar nixpkgs/options docs
       │
       ▼
-llama3.2:1b (Ollama) ──→ prose review with line-level comments
+hermes3:3b (Ollama) ──→ prose review with line-level comments
 ```
 
 - **Corpus**: 98k nixpkgs packages + 16k NixOS options scraped from nixpkgs unstable
 - **Embeddings**: nomic-embed-text (768-dim) via Ollama, stored as numpy arrays
-- **Model**: llama3.2:1b running on shared Ollama instance (no second Ollama)
+- **Model**: hermes3:3b running on shared Ollama instance (no second Ollama)
 - **Lint**: statix + deadnix run deterministically before the LLM
 - **Backend**: Flask on port 5000, proxied by nginx on port 8080
 
@@ -56,7 +56,7 @@ scp -r assistant/data/embeddings <xnode>:/var/lib/nix-assistant/
 ```
 
 Requires `om` CLI authenticated against an Openmesh Xnode.
-The xnode must have a shared `hermes-ollama` container running `llama3.2:1b` and `nomic-embed-text`.
+The xnode must have a shared `hermes-ollama` container running `hermes3:3b` and `nomic-embed-text`.
 
 ## Build embeddings locally
 
@@ -77,12 +77,12 @@ POST /api/review
   → { "comments": [{ "line": int, "severity": "error|warning|hint", "message": str }] }
 
 GET /health
-  → { "status": "ok", "model": "llama3.2:1b" }
+  → { "status": "ok", "model": "hermes3:3b" }
 ```
 
 ## Roadmap
 
 - [ ] Export corpus to HuggingFace Hub (`OpenxAILabs/nix-corpus`)
 - [ ] Scrape nixpkgs community flakes for broader coverage
-- [ ] Upgrade to llama3.2:3b once tested on xnode-1 resources
+- [ ] Upgrade to qwen2.5-coder:3b for better code understanding
 - [ ] PR diff mode — review only changed files

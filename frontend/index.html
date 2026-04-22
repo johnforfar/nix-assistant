@@ -311,7 +311,7 @@
 <span class="step">2. RETRIEVE</span>      findings + attr paths → embedding → cosine search over nixpkgs corpus
 <span class="detail">→  retrieves relevant package metadata &amp; NixOS option docs from the local index</span>
 <span class="arrow">   ↓</span>
-<span class="step">3. REVIEW</span>        lint findings + retrieved context → local LLM (llama3.2:1b via Ollama)
+<span class="step">3. REVIEW</span>        lint findings + retrieved context → local LLM (hermes3:3b via Ollama)
 <span class="detail">→  writes natural language review comments with line numbers and fix suggestions</span>
   </div>
 
@@ -340,7 +340,7 @@
         No fine-tuning. The deterministic linters (<strong>statix</strong>, <strong>deadnix</strong>)
         do the heavy lifting — they find real bugs before the LLM sees anything.
         The LLM's only job is converting structured findings into readable prose.
-        <strong>llama3.2:1b</strong> running locally via <strong>Ollama</strong> — zero API cost,
+        <strong>hermes3:3b</strong> running locally via <strong>Ollama</strong> — zero API cost,
         fully sovereign.
       </p>
     </div>
@@ -381,7 +381,7 @@
     <div class="card">
       <div class="card-title">Roadmap</div>
       <p>
-        <strong>v1:</strong> statix + deadnix lint, RAG retrieval, llama3.2:1b prose.<br>
+        <strong>v1:</strong> statix + deadnix lint, RAG retrieval, hermes3:3b prose.<br>
         <strong>v2:</strong> source file reader (Pass B), build-eval harness, Qwen 2.5 Coder 3B upgrade.<br>
         <strong>v3:</strong> home-manager support (Pass G), streaming output, VS Code extension.
       </p>
