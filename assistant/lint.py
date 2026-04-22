@@ -25,8 +25,16 @@ class Finding:
 
 
 def _find_tool(name: str) -> list[str]:
-    """Return command prefix to invoke tool, preferring PATH over nix run."""
+    """Return command to invoke tool.
+
+    Checks env vars STATIX_BIN / DEADNIX_BIN first (set by flake.nix so the
+    nix store path is explicit), then falls back to PATH, then nix run.
+    """
+    import os
     import shutil
+    env_key = f"{name.upper()}_BIN"
+    if explicit := os.environ.get(env_key):
+        return [explicit]
     if shutil.which(name):
         return [name]
     return ["nix", "run", f"nixpkgs#{name}", "--"]
