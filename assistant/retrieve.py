@@ -93,7 +93,7 @@ def search_multi(
         for table in ("packages", "nixos-options"):
             try:
                 hits = search(query, table=table, top_k=top_k, ollama_url=ollama_url)
-            except FileNotFoundError:
+            except (FileNotFoundError, Exception):
                 continue
             for h in hits:
                 if h.id not in seen or h.score > seen[h.id].score:

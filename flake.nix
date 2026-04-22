@@ -61,7 +61,7 @@
 
             environment = {
               NIX_ASSISTANT_DATA  = "/var/lib/nix-assistant";
-              NIX_ASSISTANT_MODEL = "llama3.2:1b";
+              NIX_ASSISTANT_MODEL = "hermes3:3b";
               OLLAMA_URL          = "http://hermes-ollama.local:11434";
               PORT                = "5000";
               BIND_HOST           = "127.0.0.1";
