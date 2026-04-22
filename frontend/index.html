@@ -5,57 +5,408 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>nix-assistant — rate my Nix config</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&display=swap');
+
+  :root {
+    --nix:      #7ebae4;
+    --nix-dim:  #4a7aaa;
+    --cyan:     #00e5ff;
+    --cyan2:    #00b4d8;
+    --white:    #e8f4ff;
+    --dim:      #3a5a70;
+    --bg:       #000408;
+    --panel:    #00090f;
+    --border:   #0a2030;
+    --glow:     rgba(0,229,255,.18);
+    --glow-sm:  rgba(0,229,255,.08);
+    --red:      #ff3860;
+    --yellow:   #ffe566;
+    --green:    #00ffb3;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-         background: #0f1117; color: #e2e8f0; min-height: 100vh; padding: 2rem; }
-  h1 { font-size: 1.5rem; font-weight: 700; color: #7dd3fc; margin-bottom: .25rem; }
-  p.sub { font-size: .875rem; color: #94a3b8; margin-bottom: 1.5rem; }
-  textarea { width: 100%; height: 280px; background: #1e2433; border: 1px solid #334155;
-             border-radius: 8px; color: #e2e8f0; font-family: "JetBrains Mono", "Fira Code", monospace;
-             font-size: .85rem; padding: 1rem; resize: vertical; outline: none; }
-  textarea:focus { border-color: #7dd3fc; }
-  button { margin-top: 1rem; padding: .6rem 1.4rem; background: #0ea5e9; border: none;
-           border-radius: 6px; color: #fff; font-size: .9rem; font-weight: 600;
-           cursor: pointer; transition: background .15s; }
-  button:hover { background: #38bdf8; }
-  button:disabled { background: #334155; cursor: not-allowed; }
-  #results { margin-top: 1.5rem; }
-  .comment { display: flex; gap: .75rem; align-items: flex-start;
-             background: #1e2433; border-radius: 8px; padding: .75rem 1rem;
-             margin-bottom: .5rem; border-left: 3px solid #334155; }
-  .comment.error   { border-color: #f87171; }
-  .comment.warning { border-color: #fbbf24; }
-  .comment.hint    { border-color: #34d399; }
-  .badge { font-size: .7rem; font-weight: 700; padding: .15rem .4rem;
-           border-radius: 4px; white-space: nowrap; flex-shrink: 0; }
-  .badge.error   { background: #7f1d1d; color: #fca5a5; }
-  .badge.warning { background: #78350f; color: #fde68a; }
-  .badge.hint    { background: #064e3b; color: #6ee7b7; }
-  .loc { font-size: .75rem; color: #64748b; flex-shrink: 0; }
-  .msg { font-size: .875rem; line-height: 1.5; }
-  .none { color: #34d399; font-size: .9rem; }
-  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid #334155;
-             border-top-color: #7dd3fc; border-radius: 50%; animation: spin .6s linear infinite; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Share Tech Mono', monospace;
+    background: var(--bg);
+    color: var(--white);
+    min-height: 100vh;
+  }
+
+  /* grid overlay */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; position: relative; z-index: 1; }
+
+  /* ── HERO ── */
+  .hero {
+    padding: 3.5rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-direction: column; align-items: flex-start;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    letter-spacing: .14em;
+    color: var(--cyan);
+    text-shadow:
+      0 0 20px var(--cyan),
+      0 0 60px rgba(0,229,255,.5),
+      0 0 120px rgba(0,229,255,.2);
+    line-height: 1;
+    margin-bottom: .6rem;
+  }
+
+  .logo span { color: var(--nix); text-shadow: 0 0 20px var(--nix), 0 0 50px rgba(126,186,228,.4); }
+
+  .tagline {
+    font-size: .78rem;
+    letter-spacing: .1em;
+    color: var(--nix-dim);
+    margin-bottom: 1.6rem;
+  }
+  .tagline em { color: var(--cyan2); font-style: normal; }
+
+  /* ── REVIEW PANEL ── */
+  .review-panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.4rem;
+    margin: 2rem 0;
+    box-shadow: 0 0 40px rgba(0,0,0,.6), inset 0 0 30px rgba(0,229,255,.02);
+  }
+
+  .panel-header {
+    font-size: .65rem; letter-spacing: .18em; color: var(--dim);
+    text-transform: uppercase; margin-bottom: .8rem;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .panel-header::before { content: '▸'; color: var(--cyan); }
+
+  textarea {
+    width: 100%;
+    height: 280px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: #a8d8ff;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: .83rem;
+    line-height: 1.6;
+    padding: 1rem;
+    resize: vertical;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    caret-color: var(--cyan);
+  }
+  textarea::placeholder { color: #0d2030; }
+  textarea:focus {
+    border-color: var(--cyan2);
+    box-shadow: 0 0 0 1px var(--cyan2), 0 0 20px var(--glow-sm);
+  }
+
+  .actions { display: flex; align-items: center; gap: 1.2rem; margin-top: .9rem; }
+
+  button {
+    font-family: 'Orbitron', monospace;
+    font-size: .72rem; font-weight: 700;
+    letter-spacing: .15em; text-transform: uppercase;
+    padding: .55rem 1.8rem;
+    background: transparent;
+    border: 1px solid var(--cyan);
+    border-radius: 2px;
+    color: var(--cyan);
+    cursor: pointer;
+    position: relative;
+    transition: background .15s, box-shadow .15s;
+  }
+  button::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: var(--cyan);
+    opacity: 0;
+    transition: opacity .15s;
+  }
+  button:hover { box-shadow: 0 0 20px var(--glow), 0 0 40px rgba(0,229,255,.1); }
+  button:hover::before { opacity: .07; }
+  button:disabled { border-color: var(--border); color: var(--dim); cursor: not-allowed; box-shadow: none; }
+  button:disabled::before { opacity: 0; }
+
+  .kbd { font-size: .7rem; color: var(--dim); }
+
+  #results { margin-top: 1.2rem; }
+
+  .findings-label {
+    font-size: .62rem; letter-spacing: .16em; color: var(--dim);
+    text-transform: uppercase; margin-bottom: .6rem;
+    display: flex; align-items: center; gap: .5rem;
+  }
+  .findings-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  .comment {
+    display: flex; gap: .8rem; align-items: flex-start;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--border);
+    padding: .6rem .9rem;
+    margin-bottom: .35rem;
+    border-radius: 2px;
+  }
+  .comment.error   { border-left-color: var(--red); }
+  .comment.warning { border-left-color: var(--yellow); }
+  .comment.hint    { border-left-color: var(--nix); }
+
+  .badge {
+    font-size: .62rem; font-weight: 700; padding: .1rem .35rem;
+    border-radius: 2px; white-space: nowrap; flex-shrink: 0;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  .badge.error   { background: rgba(255,56,96,.12);  color: var(--red);    border: 1px solid rgba(255,56,96,.3); }
+  .badge.warning { background: rgba(255,229,102,.1); color: var(--yellow); border: 1px solid rgba(255,229,102,.25); }
+  .badge.hint    { background: rgba(126,186,228,.1); color: var(--nix);    border: 1px solid rgba(126,186,228,.25); }
+
+  .loc { font-size: .7rem; color: var(--cyan2); flex-shrink: 0; padding-top: .05rem; }
+  .msg { font-size: .82rem; line-height: 1.55; color: var(--white); }
+
+  .ok    { color: var(--green); font-size: .85rem; text-shadow: 0 0 10px rgba(0,255,179,.3); }
+  .err-p { color: var(--red);   font-size: .82rem; }
+
+  .spinner {
+    display: inline-block; width: 12px; height: 12px;
+    border: 2px solid var(--border); border-top-color: var(--cyan);
+    border-radius: 50%; animation: spin .5s linear infinite;
+    vertical-align: middle; margin-right: .5rem;
+  }
+  .scanning { color: var(--dim); font-size: .78rem; letter-spacing: .08em; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .max-w { max-width: 860px; margin: 0 auto; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none; border-top: 1px solid var(--border);
+    margin: 3rem 0;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1rem; font-weight: 700;
+    letter-spacing: .18em; text-transform: uppercase;
+    color: var(--nix);
+    text-shadow: 0 0 16px rgba(126,186,228,.4);
+    margin-bottom: 1.8rem;
+    display: flex; align-items: center; gap: .8rem;
+  }
+  .section-title::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--nix-dim), transparent); }
+
+  .pipeline {
+    font-size: .78rem; line-height: 2;
+    color: var(--dim);
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+  }
+  .pipeline .step { color: var(--cyan); }
+  .pipeline .arrow { color: var(--nix-dim); }
+  .pipeline .detail { color: #2a5060; margin-left: 2rem; }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1.1rem 1.2rem;
+    transition: border-color .2s, box-shadow .2s;
+  }
+  .card:hover { border-color: var(--nix-dim); box-shadow: 0 0 20px rgba(0,0,0,.4); }
+
+  .card-title {
+    font-family: 'Orbitron', monospace;
+    font-size: .68rem; font-weight: 700;
+    letter-spacing: .14em; text-transform: uppercase;
+    color: var(--cyan2);
+    margin-bottom: .65rem;
+  }
+
+  .card p { font-size: .78rem; line-height: 1.7; color: #5a8aaa; }
+  .card p strong { color: var(--nix); }
+  .card p code { color: var(--cyan2); background: rgba(0,229,255,.05);
+                 padding: .05rem .3rem; border-radius: 2px; font-size: .75rem; }
+
+  .stat-row { display: flex; gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-n {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.8rem; font-weight: 900;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0,229,255,.5);
+    line-height: 1;
+  }
+  .stat-l { font-size: .65rem; letter-spacing: .1em; color: var(--dim); text-transform: uppercase; margin-top: .3rem; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 1.5rem 0 3rem;
+    font-size: .68rem;
+    color: var(--dim);
+    letter-spacing: .06em;
+  }
+  footer a { color: var(--nix-dim); text-decoration: none; }
+  footer a:hover { color: var(--nix); }
 </style>
 </head>
 <body>
-<div class="max-w">
-  <h1>nix-assistant</h1>
-  <p class="sub">Paste a <code>flake.nix</code>, <code>configuration.nix</code>, or <code>home.nix</code> — get inline review comments.</p>
-  <textarea id="src" placeholder="{ config, pkgs, ... }:&#10;{&#10;  services.openssh.enable = true;&#10;  ...&#10;}"></textarea>
-  <button id="btn" onclick="review()">Review</button>
-  <div id="results"></div>
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="logo">NIX<span>-</span>ASSISTANT</div>
+    <p class="tagline">rate my nix config &nbsp;·&nbsp; <em>lint + RAG + local LLM</em> &nbsp;·&nbsp; 100% open source &nbsp;·&nbsp; zero cloud</p>
+  </div>
+
+  <!-- REVIEW PANEL -->
+  <div class="review-panel">
+    <div class="panel-header">paste your config — flake.nix · configuration.nix · home.nix</div>
+    <textarea id="src" spellcheck="false" placeholder="{ config, pkgs, ... }:
+{
+  services.openssh.enable = true;
+  environment.systemPackages = with pkgs; [ vim ];
+}"></textarea>
+    <div class="actions">
+      <button id="btn" onclick="doReview()">[ REVIEW ]</button>
+      <span class="kbd">or ⌘ Enter</span>
+    </div>
+    <div id="results"></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- HOW IT WORKS -->
+  <div class="section-title">How It Works</div>
+
+  <div class="pipeline">
+<span class="step">1. LINT</span>          statix + deadnix run deterministically over your config
+<span class="detail">→  finds redundant defaults, unused bindings, deprecated attrs, useless parens</span>
+<span class="arrow">   ↓</span>
+<span class="step">2. RETRIEVE</span>      findings + attr paths → embedding → cosine search over nixpkgs corpus
+<span class="detail">→  retrieves relevant package metadata &amp; NixOS option docs from the local index</span>
+<span class="arrow">   ↓</span>
+<span class="step">3. REVIEW</span>        lint findings + retrieved context → local LLM (llama3.2:1b via Ollama)
+<span class="detail">→  writes natural language review comments with line numbers and fix suggestions</span>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><div class="stat-n">98k</div><div class="stat-l">nixpkgs packages</div></div>
+    <div class="stat"><div class="stat-n">16k</div><div class="stat-l">NixOS options</div></div>
+    <div class="stat"><div class="stat-n">114k</div><div class="stat-l">total corpus rows</div></div>
+    <div class="stat"><div class="stat-n">0</div><div class="stat-l">cloud API calls</div></div>
+  </div>
+
+  <div class="cards">
+    <div class="card">
+      <div class="card-title">The Corpus</div>
+      <p>
+        Scraped directly from a local <strong>nixpkgs-unstable</strong> clone.
+        <strong>98,382 packages</strong> enumerated via <code>nix-env -qaP --json</code>
+        and <strong>16,095 NixOS module options</strong> via <code>nix-instantiate --eval</code>.
+        Pinned to commit <code>b12141ef</code>. Exported as a public
+        <strong>Hugging Face dataset</strong> at <code>OpenxAILabs/nix-corpus</code>.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">The Model</div>
+      <p>
+        No fine-tuning. The deterministic linters (<strong>statix</strong>, <strong>deadnix</strong>)
+        do the heavy lifting — they find real bugs before the LLM sees anything.
+        The LLM's only job is converting structured findings into readable prose.
+        <strong>llama3.2:1b</strong> running locally via <strong>Ollama</strong> — zero API cost,
+        fully sovereign.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">The RAG Index</div>
+      <p>
+        Every package description and option doc is embedded with
+        <strong>nomic-embed-text</strong> (768 dims) and stored as numpy arrays.
+        At review time, findings are embedded and cosine-searched to pull
+        relevant <strong>nixpkgs context</strong> into the prompt — grounding the
+        LLM in real package metadata rather than hallucinated facts.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Why Not Fine-Tuning?</div>
+      <p>
+        Fine-tuning a 3B model needs ~50k labelled examples and a GPU.
+        This tool needs neither. <strong>statix</strong> already knows the Nix grammar rules.
+        The RAG index already knows the nixpkgs API surface.
+        The LLM just needs to write one clear sentence per finding — a
+        task any <strong>1B model</strong> handles well with good few-shot prompting.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Infrastructure</div>
+      <p>
+        Runs on a sovereign <strong>Openmesh Xnode</strong> (16 GB RAM, x86 CPU).
+        Deployed as a <strong>NixOS container</strong> via <code>flake.nix</code>.
+        Shares <strong>Ollama</strong> with sibling apps — one model server,
+        multiple consumers. No GPU required. Inference for a typical config
+        takes <strong>5–15 seconds</strong> on CPU.
+      </p>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Roadmap</div>
+      <p>
+        <strong>v1:</strong> statix + deadnix lint, RAG retrieval, llama3.2:1b prose.<br>
+        <strong>v2:</strong> source file reader (Pass B), build-eval harness, Qwen 2.5 Coder 3B upgrade.<br>
+        <strong>v3:</strong> home-manager support (Pass G), streaming output, VS Code extension.
+      </p>
+    </div>
+  </div>
+
+  <footer>
+    <a href="https://github.com/johnforfar/nix-assistant">github.com/johnforfar/nix-assistant</a>
+    &nbsp;·&nbsp;
+    <a href="https://huggingface.co/datasets/OpenxAILabs/nix-corpus">OpenxAILabs/nix-corpus</a>
+    &nbsp;·&nbsp;
+    built by <a href="https://openxai.org">OpenxAI</a>
+    &nbsp;·&nbsp; MIT license
+  </footer>
+
 </div>
+
 <script>
-async function review() {
+async function doReview() {
   const src = document.getElementById('src').value.trim();
   const btn = document.getElementById('btn');
   const out = document.getElementById('results');
   if (!src) return;
   btn.disabled = true;
-  out.innerHTML = '<span class="spinner"></span>';
+  out.innerHTML = '<p class="scanning"><span class="spinner"></span>scanning config...</p>';
   try {
     const r = await fetch('/api/review', {
       method: 'POST',
@@ -63,49 +414,64 @@ async function review() {
       body: JSON.stringify({source: src})
     });
     const data = await r.json();
+    out.innerHTML = '';
     if (data.error) {
       const p = document.createElement('p');
-      p.style.color = '#f87171';
-      p.textContent = data.error;
-      out.innerHTML = '';
+      p.className = 'err-p';
+      p.textContent = '// error: ' + data.error;
       out.appendChild(p);
       return;
     }
     const comments = data.comments || [];
     if (!comments.length) {
-      out.innerHTML = '<p class="none">✓ No issues found.</p>';
+      const p = document.createElement('p');
+      p.className = 'ok';
+      p.textContent = '// no issues found';
+      out.appendChild(p);
       return;
     }
-    const SEVERITIES = new Set(['error', 'warning', 'hint']);
-    out.innerHTML = '';
+    const lbl = document.createElement('div');
+    lbl.className = 'findings-label';
+    lbl.textContent = `${comments.length} finding${comments.length > 1 ? 's' : ''}`;
+    out.appendChild(lbl);
+
+    const SEVS = new Set(['error', 'warning', 'hint']);
     comments.forEach(c => {
-      const sev = SEVERITIES.has(c.severity) ? c.severity : 'hint';
+      const sev = SEVS.has(c.severity) ? c.severity : 'hint';
       const div = document.createElement('div');
       div.className = `comment ${sev}`;
+
       const badge = document.createElement('span');
       badge.className = `badge ${sev}`;
       badge.textContent = sev;
       div.appendChild(badge);
+
       if (c.line) {
         const loc = document.createElement('span');
         loc.className = 'loc';
-        loc.textContent = `line ${c.line}`;
+        loc.textContent = 'line ' + c.line;
         div.appendChild(loc);
       }
+
       const msg = document.createElement('span');
       msg.className = 'msg';
       msg.textContent = c.message;
       div.appendChild(msg);
+
       out.appendChild(div);
     });
   } catch(e) {
-    out.innerHTML = `<p style="color:#f87171">Request failed: ${e.message}</p>`;
+    out.innerHTML = '';
+    const p = document.createElement('p');
+    p.className = 'err-p';
+    p.textContent = '// request failed: ' + e.message;
+    out.appendChild(p);
   } finally {
     btn.disabled = false;
   }
 }
 document.getElementById('src').addEventListener('keydown', e => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') review();
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') doReview();
 });
 </script>
 </body>
