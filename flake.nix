@@ -26,6 +26,23 @@
         serverScript = pkgs.writeText "nix-assistant-server.py"
           (builtins.readFile ./assistant/server.py);
 
+        # Downloads embedding index from GitHub Releases on first boot.
+        # Runs as ExecStartPre; '-' prefix means failure is non-fatal so
+        # the service still starts (lint-only mode) if the download fails.
+        fetchScript = pkgs.writeShellScript "nix-assistant-fetch-data" ''
+          EMB_DIR=/var/lib/nix-assistant/embeddings
+          if [ ! -f "$EMB_DIR/packages.npy" ]; then
+            echo "nix-assistant: downloading embedding index from GitHub Releases..."
+            mkdir -p "$EMB_DIR"
+            BASE=https://github.com/johnforfar/nix-assistant/releases/download/data-v1
+            ${pkgs.curl}/bin/curl -fsSL "$BASE/packages.npy"            -o "$EMB_DIR/packages.npy"
+            ${pkgs.curl}/bin/curl -fsSL "$BASE/packages_meta.json"      -o "$EMB_DIR/packages_meta.json"
+            ${pkgs.curl}/bin/curl -fsSL "$BASE/nixos_options.npy"       -o "$EMB_DIR/nixos_options.npy"
+            ${pkgs.curl}/bin/curl -fsSL "$BASE/nixos_options_meta.json" -o "$EMB_DIR/nixos_options_meta.json"
+            echo "nix-assistant: embedding index ready."
+          fi
+        '';
+
         frontendDir = pkgs.runCommand "nix-assistant-frontend" {} ''
           mkdir -p $out
           cp ${./frontend/index.html} $out/index.html
@@ -44,15 +61,10 @@
 
           # ================================================================
           # Flask backend
-          #
-          # Data lives in StateDirectory (/var/lib/nix-assistant/).
-          # Push once after deploy:
-          #   scp scrape/data/corpus.db       <xnode>:/var/lib/nix-assistant/
-          #   scp -r assistant/data/embeddings <xnode>:/var/lib/nix-assistant/
-          #
           # OLLAMA_URL = shared hermes-ollama container (no embedded Ollama).
-          # STATIX_BIN / DEADNIX_BIN = full nix store paths so lint.py
-          # doesn't need them on PATH.
+          # STATIX_BIN / DEADNIX_BIN = full nix store paths (avoid PATH conflict).
+          # Embeddings are downloaded from GitHub Releases on first boot via
+          # ExecStartPre (fetchScript above).
           # ================================================================
           systemd.services.nix-assistant = {
             description = "nix-assistant — Nix config review (lint + RAG + LLM)";
@@ -71,8 +83,9 @@
             };
 
             serviceConfig = {
-              Type           = "simple";
-              ExecStart      = "${pythonEnv}/bin/python ${serverScript}";
+              Type            = "simple";
+              ExecStartPre    = "-${fetchScript}";
+              ExecStart       = "${pythonEnv}/bin/python ${serverScript}";
               Restart        = "on-failure";
               RestartSec     = "10s";
               User           = "nix-assistant";
