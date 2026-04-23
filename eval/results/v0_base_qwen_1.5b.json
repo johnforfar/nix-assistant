@@ -1,0 +1,645 @@
+{
+  "version": "v0_base_qwen_1.5b",
+  "system": "base Qwen2.5-Coder-1.5B (no fine-tune) via local pipeline",
+  "dataset": "eval\\dataset\\v0_seed.jsonl",
+  "n_cases": 25,
+  "avg_latency_ms": 5498.120000000345,
+  "metrics": {
+    "schema_valid": 1.0,
+    "line_exact": 0.0,
+    "severity_match": 0.2,
+    "message_keywords_hit": 0.0,
+    "looks_like_escape_hatch": 1.0,
+    "dialect_awareness": 1.0,
+    "empty_on_negative": 0.0
+  },
+  "metrics_detail": {
+    "schema_valid": {
+      "pass_rate": 1.0,
+      "n_applicable": 25,
+      "n_total": 25
+    },
+    "line_exact": {
+      "pass_rate": 0.0,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "severity_match": {
+      "pass_rate": 0.2,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "message_keywords_hit": {
+      "pass_rate": 0.0,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "looks_like_escape_hatch": {
+      "pass_rate": 1.0,
+      "n_applicable": 25,
+      "n_total": 25
+    },
+    "dialect_awareness": {
+      "pass_rate": 1.0,
+      "n_applicable": 12,
+      "n_total": 25
+    },
+    "empty_on_negative": {
+      "pass_rate": 0.0,
+      "n_applicable": 5,
+      "n_total": 25
+    }
+  },
+  "per_case": [
+    {
+      "id": "T001",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6687.000000005355,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T002",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6468.999999997322,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T003",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 2375.0,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T004",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6625.0,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T005",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6422.000000005937,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T006",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6437.999999994645,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T007",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6437.000000005355,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T008",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6468.999999997322,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T009",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6436.999999990803,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T010",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6407.000000006519,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T011",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6421.0000000020955,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T012",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6437.999999994645,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T013",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 2375.0,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T014",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 2391.0000000032596,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T015",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6452.999999994063,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T016",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 2453.0000000086147,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T017",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6468.999999997322,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T018",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6452.999999994063,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T019",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6453.000000008615,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T020",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 6421.999999991385,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T021",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 6500.0,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T022",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 2453.0000000086147,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T023",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 10625.0,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T024",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 2375.0,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T025",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 2406.0000000026776,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "severity": "hint",
+          "message": "No issues found."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    }
+  ]
+}

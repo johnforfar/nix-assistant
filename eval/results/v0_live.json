@@ -1,0 +1,801 @@
+{
+  "version": "v0_live_hermes3_3b",
+  "system": "live xnode \u2014 hermes3:3b + statix/deadnix RAG",
+  "dataset": "eval\\dataset\\v0_seed.jsonl",
+  "n_cases": 25,
+  "avg_latency_ms": 18400.599999999977,
+  "metrics": {
+    "schema_valid": 0.96,
+    "line_exact": 0.2,
+    "severity_match": 0.45,
+    "message_keywords_hit": 0.25,
+    "looks_like_escape_hatch": 0.04,
+    "no_hallucinated_options": 0.8888888888888888,
+    "dialect_awareness": 1.0,
+    "empty_on_negative": 0.0
+  },
+  "metrics_detail": {
+    "schema_valid": {
+      "pass_rate": 0.96,
+      "n_applicable": 25,
+      "n_total": 25
+    },
+    "line_exact": {
+      "pass_rate": 0.2,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "severity_match": {
+      "pass_rate": 0.45,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "message_keywords_hit": {
+      "pass_rate": 0.25,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "looks_like_escape_hatch": {
+      "pass_rate": 0.04,
+      "n_applicable": 25,
+      "n_total": 25
+    },
+    "no_hallucinated_options": {
+      "pass_rate": 0.8888888888888888,
+      "n_applicable": 9,
+      "n_total": 25
+    },
+    "dialect_awareness": {
+      "pass_rate": 1.0,
+      "n_applicable": 12,
+      "n_total": 25
+    },
+    "empty_on_negative": {
+      "pass_rate": 0.0,
+      "n_applicable": 5,
+      "n_total": 25
+    }
+  },
+  "per_case": [
+    {
+      "id": "T001",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 22343.000000008033,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "pkgs is the top-level Nix expression \u2014 consider breaking it into a module for better readability and maintainability.",
+          "severity": "hint"
+        },
+        {
+          "line": 3,
+          "message": "unused binding pkgs indicates an unused top-level variable. Replace it with a module definition to avoid confusion.",
+          "severity": "error"
+        },
+        {
+          "line": 0,
+          "message": "texlive: Consider using texliveConTeXt or texliveSmall for TeX Live environment.",
+          "severity": "warning"
+        },
+        {
+          "line": 0,
+          "message": "environment.noXlibs (unspecified value): Specify whether to include X libraries in systemPackages.",
+          "severity": "warning"
+        },
+        {
+          "line": 0,
+          "message": "Include ~/bin/ in $PATH by setting environment.homeBinInPath = true.",
+          "severity": "warning"
+        },
+        {
+          "line": 0,
+          "message": "Use environment.extraSetup for shell fragments modifying the internals of the environment, e.g. MIME caches.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T002",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 18093.999999997322,
+      "parsed_comments": [
+        {
+          "line": 2,
+          "message": "Consider importing 'lib' directly instead of using ... to avoid potential confusion.",
+          "severity": "hint"
+        },
+        {
+          "line": 4,
+          "message": "use the function lib.mkIf instead of if to improve readability and maintainability.",
+          "severity": "warning"
+        },
+        {
+          "line": 5,
+          "message": "rezt seems to be an undefined variable \u2014 ensure it is properly defined or removed.",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T003",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 9406.000000002678,
+      "parsed_comments": [
+        {
+          "line": 2,
+          "message": "The variable 'x' is defined but not used. Consider removing it or using it in the expression.",
+          "severity": "error"
+        },
+        {
+          "line": 3,
+          "message": "The syntax 'vv + x' is incorrect and will likely result in an error. You may have intended to use 'v + x'.",
+          "severity": "error"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T004",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 25328.999999997905,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "message": "The vim and vvim packages are duplicated. Use with pkgs instead.",
+          "severity": "warning"
+        },
+        {
+          "line": 6,
+          "message": "Consider using the 'texlive' attribute set to avoid duplication of texlive packages.",
+          "severity": "hint"
+        },
+        {
+          "line": 7,
+          "message": "The environment.noXlibs is unspecified. It should be set to true if no X libraries are needed.",
+          "severity": "warning"
+        },
+        {
+          "line": 8,
+          "message": "homeBinInPath should be set to true to include ~/bin in $PATH.",
+          "severity": "warning"
+        },
+        {
+          "line": 9,
+          "message": "The environment.extraSetup is a strings concatenated field. It should contain shell fragments that modify the system environment after it has been created.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": false,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T005",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 23467.99999999348,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "The lambda pattern `config` and `pkgs` are unused here. Consider using relevant context from the nixpkgs corpus to determine which configuration options might be appropriate.",
+          "severity": "hint"
+        },
+        {
+          "line": 2,
+          "message": "services.fooo.enable is used without a corresponding service definition in the provided context. Please check the nixpkgs corpus for available services and ensure that foxx is properly defined.",
+          "severity": "error"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": false,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T006",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 17938.000000009197,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "config is a top-level parameter without clear purpose \u2014 consider using networking.hostName instead.",
+          "severity": "hint"
+        },
+        {
+          "line": 3,
+          "message": "unused lambda pattern 'config' suggests the configuration may be missing necessary context. Consider referencing networking.hostName or similar parameters.",
+          "severity": "warning"
+        },
+        {
+          "line": 0,
+          "message": "Refer to the provided context for available options related to networking.hostName and timeServers.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T007",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 15139.999999999418,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "The lambda pattern `config` and `pkgs` are unused here. Consider using the provided context to find relevant packages.",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T008",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 24610.000000000582,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "The variable 'config' is used without being defined \u2014 consider importing the necessary configuration module.",
+          "severity": "hint"
+        },
+        {
+          "line": 0,
+          "message": "Context information suggests potential alternatives or related packages that could be relevant for this system setting. Here are some suggestions to explore if needed:",
+          "severity": "info"
+        }
+      ],
+      "metrics": {
+        "schema_valid": false,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T009",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 18500.0,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "The entire `config` parameter is unused. Consider removing it to reduce noise.",
+          "severity": "hint"
+        },
+        {
+          "line": 1,
+          "message": "Unused lambda pattern: config",
+          "severity": "warning"
+        },
+        {
+          "line": 0,
+          "message": "It seems you meant to use the `services.openssh.enable = \"yes\";` line, which is for enabling SSH service. The openssh package (implementation of the SSH protocol) is referenced in the context but not directly used in your configuration snippet.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T010",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 12093.999999997322,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "config is an incomplete scope \u2014 consider using networking.hostName as per the context.",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T011",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 18750.0,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "config is a top-level variable without an explicit purpose \u2014 consider renaming it to reflect its intended use.",
+          "severity": "hint"
+        },
+        {
+          "line": 0,
+          "message": "unused lambda pattern 'config' suggests that you might want to enable Nginx for a specific service. Check the context provided by nixpkgs corpus for available options like services.ente.api.nginx.enable, services.firezone.server.nginx.enable, etc.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T012",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 13342.99999999348,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "config is an unused lambda pattern \u2014 consider using the provided context to find a suitable alias or import.",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T013",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 23125.0,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "message": "The script ends abruptly without a semicolon or any other expected token.",
+          "severity": "error"
+        },
+        {
+          "line": 3,
+          "message": "Unexpected TOKEN_IN at 12..18 \u2014 this line seems to be incomplete and may need fixing.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T014",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 13391.00000000326,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "message": "Unexpected TOKEN_ASSIGN at position 18-21. It expected a TOKEN_SEMICOLON but found no matching token.",
+          "severity": "error"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T015",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 25625.0,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "message": "The configuration file is incomplete at the end. It's expected to have a closing semicolon or curly brace.",
+          "severity": "error"
+        },
+        {
+          "line": 1,
+          "message": "The configuration file ends abruptly without a closing semicolon or curly brace after the import statement.",
+          "severity": "error"
+        },
+        {
+          "line": 4,
+          "message": "The let expression is missing its closing curly brace. It's likely that the unused binding should be moved or removed.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T016",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 13781.000000002678,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "message": "The unexpected TOKEN_ASSIGN at line 28-31 suggests an issue with the let expression syntax. It seems you are expecting a semicolon after your x definition.",
+          "severity": "error"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T017",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 11827.999999994063,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "The entire `config` parameter is unused. Consider moving the configuration directly to the root level.",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T018",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 15358.99999999674,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "The lambda pattern `config` is unused. Consider using the provided context to understand available options.",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T019",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 18828.000000008615,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "message": "[\n  {\n    \"line\": 1,\n    \"severity\": \"hint\",\n    \"message\": \"Use the named arguments for better readability and to avoid unused lambda patterns.\"\n  },\n  {\n    \"line\": null,  # No line specified for context findings\n    \"severity\": \"info\",\n    \"message\": [\n      \"Consider using boot.tmpOnTmpfs, boot.cleanTmpDir or boot.tmp.cleanOnBoot instead of boot.tmp.useTmpfs.\",\n      \"Refer to the context for available aliases and their descriptions.\"\n    ]\n  }\n]",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": true,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T020",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 12641.00000000326,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "The lambda pattern `config` is unused. Consider using `services.dbus.enable = true;` as per the context.",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T021",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 25202.999999994063,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "The 'name' argument to the lambda is unused \u2014 consider renaming it or removing it.",
+          "severity": "hint"
+        },
+        {
+          "line": 2,
+          "message": "The 'version' argument to the lambda is unused \u2014 consider renaming it or removing it.",
+          "severity": "hint"
+        },
+        {
+          "line": 3,
+          "message": "The 'dependencies' binding to the lambda is unused \u2014 consider using it in a systemPackages list if needed.",
+          "severity": "warning"
+        },
+        {
+          "line": 4,
+          "message": "This configuration likely imports dependencies from an older version. Consider updating your dependencies to use more modern libraries like `haskellPackages.old-version` and `wasmer-pack`. For example:",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T022",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 27327.999999994063,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "message": "Unexpected token at positions 38 to 75. This may indicate dead code or a syntax error.",
+          "severity": "warning"
+        },
+        {
+          "line": 1,
+          "message": "Unnecessary parentheses around the string literal 'hello world'.",
+          "severity": "warning"
+        },
+        {
+          "line": 9,
+          "message": "Unexpected TOKEN_PAREN_CLOSE at position 9. Expected any of [TOKEN_PAREN_OPEN, TOKEN_REC, TOKEN_CURLY_B_OPEN, TOKEN_SQUARE_B_OPEN, TOKEN_DYNAMIC_START, TOKEN_STRING_START, TOKEN_IDENT]",
+          "severity": "error"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T023",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 27094.000000011874,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "File ends unexpectedly \u2014 expected assignment or semicolon.",
+          "severity": "error"
+        },
+        {
+          "line": 2,
+          "message": "Unexpected colon at the start of the file \u2014 consider using Dhall's include function to split the configuration into multiple files.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T024",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 16858.99999999674,
+      "parsed_comments": [
+        {
+          "line": 0,
+          "message": "The provided configuration starts unexpectedly and contains an out-of-bounds token reference. Please ensure the first few lines are properly formatted.",
+          "severity": "error"
+        },
+        {
+          "line": 1,
+          "message": "There seems to be an unexpected token at line 5-58. This might indicate a formatting issue or missing context from the nixpkgs corpus.",
+          "severity": "hint"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T025",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 9937.999999994645,
+      "parsed_comments": [
+        {
+          "line": 1,
+          "message": "This script is not a NixOS configuration. Consider using nix-shell or defining a Nix expression.",
+          "severity": "hint"
+        },
+        {
+          "line": 2,
+          "message": "set -euo pipefail enables strict shell options, which are recommended for safety and reproducibility.",
+          "severity": "warning"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    }
+  ]
+}

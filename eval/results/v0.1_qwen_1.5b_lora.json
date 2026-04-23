@@ -1,0 +1,645 @@
+{
+  "version": "v0.1_qwen_1.5b_lora",
+  "system": "v0.1: Qwen2.5-Coder-1.5B + LoRA (445 pairs, 3 epochs, XPU)",
+  "dataset": "eval\\dataset\\v0_seed.jsonl",
+  "n_cases": 25,
+  "avg_latency_ms": 3341.9200000015553,
+  "metrics": {
+    "schema_valid": 0.96,
+    "line_exact": 0.9,
+    "severity_match": 0.75,
+    "message_keywords_hit": 0.45,
+    "looks_like_escape_hatch": 0.0,
+    "dialect_awareness": 1.0,
+    "no_hallucinated_options": 1.0,
+    "empty_on_negative": 0.0
+  },
+  "metrics_detail": {
+    "schema_valid": {
+      "pass_rate": 0.96,
+      "n_applicable": 25,
+      "n_total": 25
+    },
+    "line_exact": {
+      "pass_rate": 0.9,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "severity_match": {
+      "pass_rate": 0.75,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "message_keywords_hit": {
+      "pass_rate": 0.45,
+      "n_applicable": 20,
+      "n_total": 25
+    },
+    "looks_like_escape_hatch": {
+      "pass_rate": 0.0,
+      "n_applicable": 25,
+      "n_total": 25
+    },
+    "dialect_awareness": {
+      "pass_rate": 1.0,
+      "n_applicable": 12,
+      "n_total": 25
+    },
+    "no_hallucinated_options": {
+      "pass_rate": 1.0,
+      "n_applicable": 2,
+      "n_total": 25
+    },
+    "empty_on_negative": {
+      "pass_rate": 0.0,
+      "n_applicable": 5,
+      "n_total": 25
+    }
+  },
+  "per_case": [
+    {
+      "id": "T001",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 4781.0000000172295,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`fooo` is not a nixpkgs attribute \u2014 did you mean `foo`?"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T002",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3328.0000000086147,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`rezt` is not a nixpkgs attribute \u2014 did you mean `rezt`?"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": false,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T003",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3218.9999999827705,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`vv` is referenced but not in the module's function signature. Add it: `{ x, vv }`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T004",
+      "mutation_type": "undefined_variable",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3266.0000000032596,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`vvim` is not a nixpkgs attribute \u2014 did you mean `vim`?"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T005",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3265.00000001397,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`fooo` is not a nixpkgs attribute \u2014 did you mean `foo`?"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T006",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3547.000000020489,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`networkingg` is referenced but not in the module's function signature. Add it: `{ config, networkingg, ... }:`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T007",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3467.9999999934807,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`notarealprog` is not a nixpkgs attribute \u2014 did you mean `nodejs`?"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T008",
+      "mutation_type": "unknown_option",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3407.0000000065193,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "severity": "error",
+          "message": "`awsomesetting` is not a nixpkgs attribute \u2014 did you mean `awesomeSetting`?"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T009",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3485.000000015134,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "severity": "error",
+          "message": "`enable` is a attribute missing in module `nixpkgs`. Add it: `{ config, pkgs, ... }:`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T010",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 2342.9999999934807,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "severity": "error",
+          "message": "`42` is an invalid attribute name in Nix."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T011",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3562.999999994645,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`services.nginx.enable` is referenced but not in the module's function signature. Add it: `{ config, services, ... }:`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T012",
+      "mutation_type": "option_wrong_type",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 2344.0000000118744,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`[` is missing at the end of line 3."
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T013",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": false,
+      "latency_ms": 4296.999999991385,
+      "parsed_comments": null,
+      "metrics": {
+        "schema_valid": false,
+        "line_exact": false,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T014",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3171.0000000020955,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "severity": "error",
+          "message": "`bar` is referenced but not in the module's function signature. Add it: `{ foo, bar }`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T015",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3359.99999998603,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`services` is referenced but not in the module's function signature. Add it: `{ config, services, ... }:`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T016",
+      "mutation_type": "missing_semicolon",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 2125.0,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`;` at line 3 is missing"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": true,
+        "message_keywords_hit": true,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T017",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3280.9999999881256,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "severity": "error",
+          "message": "`services` is referenced but not in the module's function signature. Add it: `{ config, services, ... }:`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T018",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3391.0000000032596,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "severity": "error",
+          "message": "`networking` is referenced but not in the module's function signature. Add it: `{ config, networking, ... }:`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T019",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3437.999999994645,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "severity": "error",
+          "message": "`boot.tmp` is referenced but not in the module's function signature. Add it: `{ config, boot, ... }:`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": true,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T020",
+      "mutation_type": "redundant_default",
+      "is_negative": false,
+      "ok": true,
+      "latency_ms": 3312.999999994645,
+      "parsed_comments": [
+        {
+          "line": 3,
+          "severity": "error",
+          "message": "`services` is referenced but not in the module's function signature. Add it: `{ config, services, ... }:`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "line_exact": true,
+        "severity_match": false,
+        "message_keywords_hit": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": true
+      }
+    },
+    {
+      "id": "T021",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 3172.000000020489,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`bar` is not a nixpkgs attribute \u2014 did you mean `baz`?"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T022",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 3514.999999984866,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`print` is referenced but not in the module's function signature. Add it: `def main(): print('hello world')`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T023",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 4766.00000000326,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`foo` is referenced but not in the `buildInputs` or `outputs` of the nixpkgs module at `/home/user/nixos/configuration.nix`. Add it: `{ foo, ... }`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T024",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 3187.000000005355,
+      "parsed_comments": [
+        {
+          "line": 2,
+          "severity": "warning",
+          "message": "`how are you` is misspelled. Please correct it to `hello, how are you today?`"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    },
+    {
+      "id": "T025",
+      "mutation_type": null,
+      "is_negative": true,
+      "ok": true,
+      "latency_ms": 2516.0000000032596,
+      "parsed_comments": [
+        {
+          "line": 4,
+          "severity": "error",
+          "message": "`ls`: cannot access `/tmp`: No such file or directory"
+        }
+      ],
+      "metrics": {
+        "schema_valid": true,
+        "empty_on_negative": false,
+        "looks_like_escape_hatch": false,
+        "no_hallucinated_options": null,
+        "receipts_available": null,
+        "dialect_awareness": null
+      }
+    }
+  ]
+}

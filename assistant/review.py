@@ -122,7 +122,7 @@ def _parse_comments(raw: str) -> list[Comment]:
         items = json.loads(m.group())
         return [
             Comment(
-                line=int(item.get("line", 0)),
+                line=int(item.get("line") or 0),
                 severity=item.get("severity", "warning"),
                 message=item.get("message", ""),
             )
