@@ -2,7 +2,12 @@
 
 An open-source Nix config reviewer for the whole Nix community — paste any flake, NixOS config, home-manager module, or derivation and get structured lint findings + LLM prose advice.
 
-**Live:** deployed on a sovereign Openmesh Xnode (xnode-1) at port 8080.
+**Live demo:** [nix-assistant.build.openmesh.cloud](https://nix-assistant.build.openmesh.cloud) — running on a sovereign Openmesh Xnode.
+
+**On Hugging Face:**
+- Model: [`OpenxAILabs/nix-reviewer-1.5b`](https://huggingface.co/OpenxAILabs/nix-reviewer-1.5b)
+- GGUF (Ollama-ready): [`OpenxAILabs/nix-reviewer-1.5b-GGUF`](https://huggingface.co/OpenxAILabs/nix-reviewer-1.5b-GGUF)
+- Training data: [`OpenxAILabs/nix-reviewer-training`](https://huggingface.co/datasets/OpenxAILabs/nix-reviewer-training)
 
 ## How it works
 

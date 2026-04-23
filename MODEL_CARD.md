@@ -16,6 +16,12 @@ pipeline_tag: text-generation
 
 **A specialist 1.5B model fine-tuned to review Nix / NixOS / home-manager configurations.**
 
+**Try it live:** [nix-assistant.build.openmesh.cloud](https://nix-assistant.build.openmesh.cloud) — paste any flake, NixOS module, or home-manager config and get structured findings with line-level fixes.
+
+**Source:** [github.com/johnforfar/nix-assistant](https://github.com/johnforfar/nix-assistant) · **Dataset:** [OpenxAILabs/nix-reviewer-training](https://huggingface.co/datasets/OpenxAILabs/nix-reviewer-training)
+
+---
+
 Given a broken Nix config, it emits a strict JSON array of review comments:
 
 ```json
