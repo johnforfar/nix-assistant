@@ -7,24 +7,24 @@
   <meta name="description" content="An open-source Nix config reviewer. Paste any flake, NixOS config, or home-manager module and get structured findings with line-level fixes." />
   <script>
     // FOUC-prevention: set dark class before body renders
-    (function() {{
+    (function() {
       var saved = localStorage.getItem('nix-assistant-theme');
       var prefers = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
       var dark = saved ? saved === 'dark' : prefers;
       if (dark) document.documentElement.classList.add('dark');
-    }})();
+    })();
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script>
-    tailwind.config = {{ darkMode: 'class' }};
+    tailwind.config = { darkMode: 'class' };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    html, body {{ font-family: 'Inter', system-ui, -apple-system, sans-serif; }}
-    code, pre, textarea {{ font-family: 'JetBrains Mono', ui-monospace, monospace; }}
+    html, body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    code, pre, textarea { font-family: 'JetBrains Mono', ui-monospace, monospace; }
   </style>
 </head>
 <body class="bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 antialiased">
@@ -88,11 +88,11 @@
           <div id="gutter" class="absolute top-0 left-0 bottom-0 w-10 pt-4 pr-2 text-right text-xs leading-6 text-neutral-400 dark:text-neutral-500 bg-neutral-100 dark:bg-neutral-900 border-r border-neutral-200 dark:border-neutral-800 font-mono select-none pointer-events-none overflow-hidden">1</div>
           <textarea id="src" rows="12" spellcheck="false"
             class="w-full text-sm pl-14 pr-4 py-4 leading-6 bg-transparent text-neutral-800 dark:text-neutral-200 focus:outline-none resize-y block"
-            placeholder="{{ config, pkgs, ... }}:
-{{
+            placeholder="{ config, pkgs, ... }:
+{
   services.openssh.enable = true;
   environment.systemPackages = with pkgs; [ vim ];
-}}"></textarea>
+}"></textarea>
         </div>
         <div class="mt-4 flex items-center gap-3">
           <button id="btn" onclick="doReview()"
@@ -254,24 +254,24 @@
         <div class="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm">
           <div class="text-xs font-medium uppercase tracking-wider text-neutral-500">2 · review a config</div>
           <pre class="mt-3 text-xs bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-md p-3 overflow-x-auto leading-5 text-neutral-800 dark:text-neutral-200">ollama run hf.co/OpenxAILabs/nix-reviewer-1.5b-GGUF:Q4_K_M \
-  '{{ pkgs, ... }}:
-{{
+  '{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [ vim vvim ];
-}}'</pre>
-          <p class="text-xs text-neutral-500 mt-2">Expected: <code class="text-xs bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded">[{{"line": 4, "severity": "error", "message": "`vvim` is not..."}}]</code></p>
+}'</pre>
+          <p class="text-xs text-neutral-500 mt-2">Expected: <code class="text-xs bg-neutral-100 dark:bg-neutral-800 px-1.5 py-0.5 rounded">[{"line": 4, "severity": "error", "message": "`vvim` is not..."}]</code></p>
         </div>
       </div>
 
       <div class="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm">
         <div class="text-xs font-medium uppercase tracking-wider text-neutral-500">HTTP API (same shape as this site)</div>
-        <pre class="mt-3 text-xs bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-md p-3 overflow-x-auto leading-5 text-neutral-800 dark:text-neutral-200">curl http://localhost:11434/api/chat -d '{{
+        <pre class="mt-3 text-xs bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 rounded-md p-3 overflow-x-auto leading-5 text-neutral-800 dark:text-neutral-200">curl http://localhost:11434/api/chat -d '{
   "model": "hf.co/OpenxAILabs/nix-reviewer-1.5b-GGUF:Q4_K_M",
   "stream": false,
   "messages": [
-    {{"role": "system", "content": "You are nix-assistant. Review the Nix config and output ONLY a JSON array: [{{\"line\":int,\"severity\":\"error\"|\"warning\"|\"hint\",\"message\":str}}]"}},
-    {{"role": "user", "content": "{{ pkgs, ... }}: {{ environment.systemPackages = with pkgs; [ vim vvim ]; }}"}}
+    {"role": "system", "content": "You are nix-assistant. Review the Nix config and output ONLY a JSON array: [{\"line\":int,\"severity\":\"error\"|\"warning\"|\"hint\",\"message\":str}]"},
+    {"role": "user", "content": "{ pkgs, ... }: { environment.systemPackages = with pkgs; [ vim vvim ]; }"}
   ]
-}}'</pre>
+}'</pre>
       </div>
 
       <div class="flex flex-wrap gap-3 text-sm">
@@ -344,7 +344,7 @@
   </footer>
 
 <script>
-async function doReview() {{
+async function doReview() {
   const src = document.getElementById('src').value.trim();
   const btn = document.getElementById('btn');
   const status = document.getElementById('status');
@@ -353,82 +353,82 @@ async function doReview() {{
   btn.disabled = true;
   status.textContent = 'reviewing…';
   out.innerHTML = '';
-  try {{
-    const r = await fetch('/api/review', {{
+  try {
+    const r = await fetch('/api/review', {
       method: 'POST',
-      headers: {{ 'Content-Type': 'application/json' }},
-      body: JSON.stringify({{ source: src }})
-    }});
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source: src })
+    });
     const data = await r.json();
     status.textContent = '';
-    if (data.error) {{
+    if (data.error) {
       out.innerHTML = '<div class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-md p-3">' +
         escapeHtml('error: ' + data.error) + '</div>';
       return;
-    }}
+    }
     const comments = data.comments || [];
-    if (!comments.length) {{
+    if (!comments.length) {
       out.innerHTML = '<div class="text-sm text-green-700 dark:text-green-400 bg-green-50 dark:bg-green-950/40 border border-green-200 dark:border-green-900 rounded-md p-3">No issues found.</div>';
       return;
-    }}
+    }
     out.innerHTML = '<div class="text-xs text-neutral-500 uppercase tracking-wide mb-2">' +
       comments.length + ' finding' + (comments.length > 1 ? 's' : '') + '</div>' +
-      comments.map(c => {{
+      comments.map(c => {
         const sev = ['error','warning','hint'].includes(c.severity) ? c.severity : 'hint';
-        const ring = {{
+        const ring = {
           error:   'border-red-300 dark:border-red-900 bg-red-50 dark:bg-red-950/40',
           warning: 'border-amber-300 dark:border-amber-900 bg-amber-50 dark:bg-amber-950/40',
           hint:    'border-blue-300 dark:border-blue-900 bg-blue-50 dark:bg-blue-950/40',
-        }}[sev];
-        const badge = {{
+        }[sev];
+        const badge = {
           error: 'bg-red-600 text-white',
           warning: 'bg-amber-500 text-white',
           hint: 'bg-blue-500 text-white',
-        }}[sev];
+        }[sev];
         const loc = c.line ? '<span class="text-xs text-neutral-500 ml-2">line ' + c.line + '</span>' : '';
         return '<div class="border rounded-md p-3 ' + ring + '">' +
           '<span class="text-xs font-medium px-2 py-0.5 rounded ' + badge + '">' + sev + '</span>' +
           loc +
           '<div class="text-sm text-neutral-800 dark:text-neutral-200 mt-2">' + escapeHtml(c.message || '') + '</div>' +
           '</div>';
-      }}).join('');
-  }} catch (e) {{
+      }).join('');
+  } catch (e) {
     status.textContent = '';
     out.innerHTML = '<div class="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-md p-3">request failed: ' +
       escapeHtml(e.message) + '</div>';
-  }} finally {{
+  } finally {
     btn.disabled = false;
-  }}
-}}
+  }
+}
 
-function escapeHtml(s) {{
-  return String(s).replace(/[&<>"']/g, c => ({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}})[c]);
-}}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"})[c]);
+}
 
 // theme toggle
-document.getElementById('theme-toggle').addEventListener('click', () => {{
+document.getElementById('theme-toggle').addEventListener('click', () => {
   const isDark = document.documentElement.classList.toggle('dark');
   localStorage.setItem('nix-assistant-theme', isDark ? 'dark' : 'light');
-}});
+});
 
 // line-number gutter sync
-(function() {{
+(function() {
   const src = document.getElementById('src');
   const gutter = document.getElementById('gutter');
-  function updateGutter() {{
+  function updateGutter() {
     const count = (src.value.match(/\n/g) || []).length + 1;
     let html = '';
     for (let i = 1; i <= count; i++) html += '<div>' + i + '</div>';
     gutter.innerHTML = html;
-  }}
+  }
   src.addEventListener('input', updateGutter);
-  src.addEventListener('scroll', () => {{ gutter.scrollTop = src.scrollTop; }});
+  src.addEventListener('scroll', () => { gutter.scrollTop = src.scrollTop; });
   updateGutter();
-}})();
+})();
 
-document.getElementById('src').addEventListener('keydown', e => {{
+document.getElementById('src').addEventListener('keydown', e => {
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') doReview();
-}});
+});
 
 // interactive benchmark chart (Chart.js)
 const BENCH_VERSIONS = [
@@ -446,17 +446,17 @@ const BENCH_NOTES = [
   'Same 1187 pairs as v0.2, retrained at 2 epochs. Recovered v0.1\'s accuracy AND retained 60% of the negatives win. Best overall. Live on xnode since 2026-04-24.',
 ];
 const BENCH_METRICS = [
-  {{ key: 'schema_valid',             color: '#06b6d4', data: [100,   96,   96,   88,   96] }},
-  {{ key: 'no_hallucinated_options',  color: '#ef4444', data: [null, 88.9, 100, null, 100] }},
-  {{ key: 'line_exact',               color: '#f97316', data: [  0,   20,   90,   50,   90] }},
-  {{ key: 'severity_match',           color: '#eab308', data: [ 20,   45,   75,   40,   70] }},
-  {{ key: 'message_keywords_hit',     color: '#3b82f6', data: [  0,   25,   45,   40,   45] }},
-  {{ key: 'empty_on_negative',        color: '#22c55e', data: [  0,    0,    0,  100,   60] }},
-  {{ key: 'dialect_awareness',        color: '#a3e635', data: [100,  100,  100,  100,  100] }},
+  { key: 'schema_valid',             color: '#06b6d4', data: [100,   96,   96,   88,   96] },
+  { key: 'no_hallucinated_options',  color: '#ef4444', data: [null, 88.9, 100, null, 100] },
+  { key: 'line_exact',               color: '#f97316', data: [  0,   20,   90,   50,   90] },
+  { key: 'severity_match',           color: '#eab308', data: [ 20,   45,   75,   40,   70] },
+  { key: 'message_keywords_hit',     color: '#3b82f6', data: [  0,   25,   45,   40,   45] },
+  { key: 'empty_on_negative',        color: '#22c55e', data: [  0,    0,    0,  100,   60] },
+  { key: 'dialect_awareness',        color: '#a3e635', data: [100,  100,  100,  100,  100] },
 ];
 
 let benchChart = null;
-function renderBenchChart() {{
+function renderBenchChart() {
   const canvas = document.getElementById('benchmark-chart');
   if (!canvas || typeof Chart === 'undefined') return;
   const isDark = document.documentElement.classList.contains('dark');
@@ -464,11 +464,11 @@ function renderBenchChart() {{
   const text   = isDark ? '#a3a3a3' : '#525252';
 
   if (benchChart) benchChart.destroy();
-  benchChart = new Chart(canvas, {{
+  benchChart = new Chart(canvas, {
     type: 'line',
-    data: {{
+    data: {
       labels: BENCH_VERSIONS,
-      datasets: BENCH_METRICS.map(m => ({{
+      datasets: BENCH_METRICS.map(m => ({
         label: m.key,
         data: m.data,
         borderColor: m.color,
@@ -479,15 +479,15 @@ function renderBenchChart() {{
         borderWidth: 2.5,
         tension: 0.15,
         spanGaps: false,
-      }})),
-    }},
-    options: {{
+      })),
+    },
+    options: {
       responsive: true,
       maintainAspectRatio: false,
-      interaction: {{ mode: 'index', intersect: false }},
-      plugins: {{
-        legend: {{ position: 'bottom', labels: {{ color: text, boxWidth: 14, boxHeight: 14 }} }},
-        tooltip: {{
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { position: 'bottom', labels: { color: text, boxWidth: 14, boxHeight: 14 } },
+        tooltip: {
           backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
           titleColor:      isDark ? '#fafafa' : '#171717',
           bodyColor:       isDark ? '#d4d4d4' : '#404040',
@@ -495,43 +495,43 @@ function renderBenchChart() {{
           borderColor:     isDark ? '#404040' : '#d4d4d4',
           borderWidth: 1,
           padding: 12,
-          callbacks: {{
+          callbacks: {
             title:     ctx => BENCH_VERSIONS[ctx[0].dataIndex],
-            label:     ctx => `  ${{ctx.dataset.label}}: ${{ctx.parsed.y === null ? 'n/a' : ctx.parsed.y + '%'}}`,
+            label:     ctx => `  ${ctx.dataset.label}: ${ctx.parsed.y === null ? 'n/a' : ctx.parsed.y + '%'}`,
             afterBody: ctx => ['', BENCH_NOTES[ctx[0].dataIndex]],
-          }},
-          footerFont: {{ weight: 'normal', style: 'italic' }},
-          titleFont:  {{ weight: '600', size: 13 }},
-          bodyFont:   {{ size: 12 }},
-        }},
-      }},
-      scales: {{
-        y: {{
+          },
+          footerFont: { weight: 'normal', style: 'italic' },
+          titleFont:  { weight: '600', size: 13 },
+          bodyFont:   { size: 12 },
+        },
+      },
+      scales: {
+        y: {
           min: 0, max: 100,
-          ticks: {{ color: text, callback: v => v + '%' }},
-          grid:  {{ color: grid }},
-          title: {{ display: true, text: 'pass rate (%)', color: text }},
-        }},
-        x: {{
-          ticks: {{ color: text, autoSkip: false, maxRotation: 0 }},
-          grid:  {{ color: grid, display: false }},
-        }},
-      }},
-    }},
-  }});
-}}
+          ticks: { color: text, callback: v => v + '%' },
+          grid:  { color: grid },
+          title: { display: true, text: 'pass rate (%)', color: text },
+        },
+        x: {
+          ticks: { color: text, autoSkip: false, maxRotation: 0 },
+          grid:  { color: grid, display: false },
+        },
+      },
+    },
+  });
+}
 
 // Render on load and re-render on theme toggle
-if (document.readyState === 'loading') {{
+if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', renderBenchChart);
-}} else {{
+} else {
   renderBenchChart();
-}}
+}
 new MutationObserver(() => renderBenchChart())
-  .observe(document.documentElement, {{ attributes: true, attributeFilter: ['class'] }});
+  .observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
 // feedback form
-(function() {{
+(function() {
   const form   = document.getElementById('fb-form');
   const msg    = document.getElementById('fb-msg');
   const name   = document.getElementById('fb-name');
@@ -543,60 +543,60 @@ new MutationObserver(() => renderBenchChart())
 
   let challengeId = null;
 
-  async function loadChallenge() {{
+  async function loadChallenge() {
     prompt.textContent = 'loading…';
-    try {{
+    try {
       const r = await fetch('/api/feedback/challenge');
       const d = await r.json();
       challengeId = d.id;
       prompt.textContent = d.prompt;
       answer.value = '';
-    }} catch (e) {{
+    } catch (e) {
       prompt.textContent = '(failed to load challenge)';
-    }}
-  }}
+    }
+  }
 
-  msg.addEventListener('input', () => {{
+  msg.addEventListener('input', () => {
     counter.textContent = msg.value.length + ' / 2000';
-  }});
+  });
 
-  form.addEventListener('submit', async e => {{
+  form.addEventListener('submit', async e => {
     e.preventDefault();
-    if (!challengeId) {{ status.textContent = 'challenge not loaded — reload the page'; return; }}
+    if (!challengeId) { status.textContent = 'challenge not loaded — reload the page'; return; }
     status.textContent = '';
     btn.disabled = true;
-    try {{
-      const r = await fetch('/api/feedback', {{
+    try {
+      const r = await fetch('/api/feedback', {
         method: 'POST',
-        headers: {{ 'Content-Type': 'application/json' }},
-        body: JSON.stringify({{
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           challenge_id: challengeId,
           answer: parseInt(answer.value, 10),
           name: name.value,
           message: msg.value,
-        }}),
-      }});
+        }),
+      });
       const d = await r.json();
-      if (d.error) {{
+      if (d.error) {
         status.innerHTML = '<span class="text-red-600 dark:text-red-400">' +
           escapeHtml('error: ' + d.error) + '</span>';
         loadChallenge();
-      }} else {{
+      } else {
         status.innerHTML = '<span class="text-green-700 dark:text-green-400">thanks — feedback received.</span>';
         msg.value = '';
         counter.textContent = '0 / 2000';
         loadChallenge();
-      }}
-    }} catch (e) {{
+      }
+    } catch (e) {
       status.innerHTML = '<span class="text-red-600 dark:text-red-400">network error: ' +
         escapeHtml(e.message) + '</span>';
-    }} finally {{
+    } finally {
       btn.disabled = false;
-    }}
-  }});
+    }
+  });
 
   loadChallenge();
-}})();
+})();
 </script>
 </body>
 </html>
