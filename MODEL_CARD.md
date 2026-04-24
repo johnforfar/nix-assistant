@@ -12,13 +12,13 @@ language:
 pipeline_tag: text-generation
 ---
 
-# nix-reviewer-1.5b (v0.1)
+# nix-reviewer-1.5b (v0.2a · current)
 
 **A specialist 1.5B model fine-tuned to review Nix / NixOS / home-manager configurations.**
 
 **Try it live:** [nix-assistant.build.openmesh.cloud](https://nix-assistant.build.openmesh.cloud) — paste any flake, NixOS module, or home-manager config and get structured findings with line-level fixes.
 
-**Source:** [github.com/johnforfar/nix-assistant](https://github.com/johnforfar/nix-assistant) · **Dataset:** [OpenxAILabs/nix-reviewer-training](https://huggingface.co/datasets/OpenxAILabs/nix-reviewer-training)
+**Source:** [github.com/johnforfar/nix-assistant](https://github.com/johnforfar/nix-assistant) · **Dataset:** [OpenxAILabs/nix-reviewer-training](https://huggingface.co/datasets/OpenxAILabs/nix-reviewer-training) · **GGUF:** [OpenxAILabs/nix-reviewer-1.5b-GGUF](https://huggingface.co/OpenxAILabs/nix-reviewer-1.5b-GGUF)
 
 ---
 
@@ -36,7 +36,7 @@ about Nix — because Nix itself is in the loop."
 
 ## Quick start
 
-Via Ollama (Q4_K_M, ~1 GB):
+Via Ollama (Q4_K_M, ~986 MB, CPU-friendly):
 
 ```bash
 ollama pull hf.co/OpenxAILabs/nix-reviewer-1.5b-GGUF:Q4_K_M
@@ -60,109 +60,137 @@ model = PeftModel.from_pretrained(base, "OpenxAILabs/nix-reviewer-1.5b")
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2.5-Coder-1.5B-Instruct")
 ```
 
-## Benchmark (v0.1)
+### Pinning a specific version
 
-Test set: 25 hand-written cases across 5 mutation classes + 5 negative (non-Nix) inputs.
-Tested on the exact same set: the live `nix-assistant.build.openmesh.cloud` deployment
-using `hermes3:3b`, the base Qwen2.5-Coder-1.5B-Instruct, and this fine-tune.
+Every released version is a git tag on the HF repo. To pin:
 
-| metric | v0 live `hermes3:3b` | v0 base Qwen 1.5B | **v0.1 LoRA** (this) |
-|---|---:|---:|---:|
-| schema_valid (output parses as `[{line, severity, message}]`) | 96% | 100% ¹ | 96% |
-| **line_exact** (top finding points at real bug) | 20% | 0% | **90%** |
-| **severity_match** | 45% | 20% | **75%** |
-| **message_keywords_hit** (mentions the actual bug) | 25% | 0% | **45%** |
-| **no_hallucinated_options** (cites only real NixOS options) | 88.9% | n/a ² | **100%** |
-| empty_on_negative (returns `[]` for non-Nix input) | 0% | 0% | 0% ³ |
-| dialect_awareness (respects NixOS vs. home-manager scope) | 100% | 100% | 100% |
-| avg latency | 18 s | 5.5 s | **3.3 s** ⁴ |
+```python
+# fp16 LoRA adapter
+PeftModel.from_pretrained(base, "OpenxAILabs/nix-reviewer-1.5b", revision="v0.1")  # or v0.2, v0.2a
+```
 
-¹ Base Qwen's 100% is illusory — every output triggered the review pipeline's
-  escape-hatch fallback (no real review emitted, valid shape by coincidence).
-² Base Qwen emitted no option-like paths, so the metric was not applicable.
-³ Known gap — the training set had no negative (non-Nix) examples. Fixed in v0.2.
-⁴ On Intel Arc 140T via `torch-xpu` + fp16 adapter. Quantized Q4_K_M on xnode CPU: ~5 s.
+```bash
+# GGUF via git clone + checkout, then import into Ollama
+git clone https://huggingface.co/OpenxAILabs/nix-reviewer-1.5b-GGUF
+cd nix-reviewer-1.5b-GGUF && git checkout v0.1
+```
 
-**Headline finding**: v0.1 never fabricates a NixOS option path (0 of 20 applicable
-cases had a hallucinated path). Every cited `services.*` / `programs.*` / `environment.*`
-exists in the nixpkgs module tree. The review pipeline also wraps this behavior at the
-inference layer so even a hallucinated output would be rejected before reaching the user.
+`main` is always the latest version (currently **v0.2a**).
 
-## Training
+## Benchmark — versioned leaderboard
+
+Test set: 25 hand-written cases across 5 mutation classes + 5 negative (non-Nix) inputs. Every version evaluated on the exact same set. Harness at [johnforfar/nix-assistant/tree/main/eval](https://github.com/johnforfar/nix-assistant/tree/main/eval).
+
+| metric | v0 base Qwen 1.5B | v0 live `hermes3:3b` | v0.1 LoRA | v0.2 LoRA (3 ep.) | **v0.2a LoRA · live** |
+|---|---:|---:|---:|---:|---:|
+| schema_valid | 100% ¹ | 96% | 96% | 88% | **96%** |
+| no_hallucinated_options | n/a ² | 88.9% | 100% | n/a ² | **100%** |
+| **line_exact** | 0% | 20% | 90% | 50% ³ | **90%** |
+| **severity_match** | 20% | 45% | 75% | 40% | **70%** |
+| **message_keywords_hit** | 0% | 25% | 45% | 40% | **45%** |
+| **empty_on_negative** | 0% | 0% | 0% | 100% ³ | **60%** |
+| dialect_awareness | 100% | 100% | 100% | 100% | **100%** |
+| avg latency (fp16 adapter, XPU) | 5.5 s | 18 s | 3.3 s | 2.0 s | **2.9 s** |
+
+¹ Base Qwen's 100% schema_valid is illusory — every output triggered the review pipeline's escape-hatch fallback (valid shape, zero signal).
+² Metric n/a when no option-path-shaped strings appear in the model's output.
+³ v0.2 over-fit to refusal at 3 epochs — captured 100% of negatives but regressed line_exact to 50%. v0.2a re-trained the same data at 2 epochs to recover the balance.
+
+**Headline finding — no hallucinated options across trained LoRA versions.** When v0.2a cites `services.*`, `programs.*`, or `environment.*`, that path exists in the real nixpkgs module tree. The review pipeline double-validates at inference time, so a hallucinated output would be rejected before reaching the user.
+
+## Training (v0.2a)
 
 - **Base**: `Qwen/Qwen2.5-Coder-1.5B-Instruct` (Apache-2.0)
 - **Method**: LoRA — r=16, α=32, dropout=0.05, target modules `q_proj`, `k_proj`, `v_proj`, `o_proj`
 - **Trainable parameters**: 4,358,144 (0.28% of 1.548 B)
-- **Dataset**: `OpenxAILabs/nix-reviewer-training` — 445 synthesized (broken_config, structured_review) pairs
+- **Dataset**: [`OpenxAILabs/nix-reviewer-training`](https://huggingface.co/datasets/OpenxAILabs/nix-reviewer-training) — **1,187** synthesized (broken_config, structured_review) pairs
+  - 471 `package_attr_path_drift`
+  - 397 `syntax_error_missing_semicolon`
+  - 282 `flake_arg_not_destructured`
+  - **37 negatives** (non-Nix inputs with `completion: "[]"`)
 - **Optimizer**: AdamW, lr 2e-4, cosine schedule, warmup 3%
 - **Precision**: bf16
-- **Epochs**: 3
+- **Epochs**: **2** (the critical lesson — see Version history below)
 - **Effective batch size**: 16 (per-device 4 × grad-accum 4)
 - **Hardware**: Intel Arc 140T iGPU (48 GB unified) via `torch-xpu` 2.11
-- **Wall time**: 5 min 4 s
-- **Final train loss**: 0.2662
-- **Final mean token accuracy**: 99.1%
+- **Wall time**: 9 min 10 s
+- **Final train loss**: 0.1788
+- **Final mean token accuracy**: 99.9%
 
 ## Training data provenance
 
-All 445 training pairs are **synthesized, not scraped**:
+All pairs are **synthesized, not scraped**:
 
-1. Pattern identified — e.g. "`inputs.X` referenced in a module that didn't destructure `inputs` from its function args".
-2. N configurations generated that exhibit the pattern, varying surrounding context, package choices, signature variants.
-3. Each synthesized configuration fed to `nix eval` (via a `nixos/nix` Docker container) to capture the ground-truth error message, line number, and column.
+1. Pattern identified — e.g. "module body references `inputs.X` without destructuring `inputs` from function args".
+2. N configurations generated exhibiting the pattern, varying surrounding context, package choices, signature variants.
+3. Each synthesized config fed to `nix eval --json` inside a `nixos/nix` Docker container to capture the ground-truth error message, line number, and column.
 4. Ideal review composed from the pattern's template + the oracle's real line/message.
-5. Pair rejected if (a) Nix produced no error, (b) the error didn't match the pattern's expected class, or (c) the source hashed to an existing pair.
+5. For negative samples (non-Nix inputs), the oracle step is skipped and the completion is hardcoded to `[]`.
+6. Pair rejected if (a) Nix produced no error where one was expected, (b) the error class differed from the pattern, or (c) the source hashed to an existing pair.
 
 **No verbatim content from any forum thread, issue, chat log, or third-party
 source appears in the dataset.** Pattern selection was informed by qualitative
 analysis of public NixOS community discussions; that analysis did not produce
 any text, config, or comment that entered the dataset.
 
-Current patterns covered (3):
+## Version history
 
-- `package_attr_path_drift` — typo or drift in a package attribute path (`vvim` for `vim`)
-- `syntax_error_missing_semicolon` — missing `;` in an attrset body
-- `flake_arg_not_destructured` — module references `inputs.X` without `inputs` in function args
+| tag | shipped? | highlight |
+|---|---|---|
+| **`v0.1`** | live 2026-04-23 → 2026-04-24 | First fine-tune. 445 pairs, 3 epochs. `line_exact` 20→90%. |
+| **`v0.2`** | **not shipped** | 1187 pairs + first 37 negatives, 3 epochs. Hit 100% on refusal but over-fit — `line_exact` regressed to 50%. Published on HF at tag `v0.2` for reproducibility. |
+| **`v0.2a`** | **live 2026-04-24 → present** | Same 1187 pairs as v0.2 at **2 epochs**. Kept v0.1's accuracy AND captured 60% of the negatives win. Best overall. |
 
-v0.2 will add: `option_renamed_across_channels`, `module_namespace_mismatch`,
-`missing_module_import`, and negative (non-Nix) examples.
+**What v0.2 taught us:** with a narrow set of training patterns (3 of the 5 mutation classes in our test set), more training steps + a first exposure to `completion: "[]"` creates a low-loss attractor — the model learns to return `[]` when uncertain, including on out-of-distribution test cases. v0.2a's 2-epoch retrain left enough flexibility in the weights to still emit real findings while learning the refusal pattern for genuine negatives.
+
+The v0.3 plan follows the lesson: add the missing 3 mutation-class synthesizers (`unknown_option`, `option_wrong_type`, `redundant_default`) + a full NixOS-module eval oracle **before** scaling data. All test-set classes become in-distribution; then larger data becomes leverage instead of a trap.
 
 ## Intended use
 
 Review submitted Nix / NixOS / home-manager configurations at
 [nix-assistant.build.openmesh.cloud](https://nix-assistant.build.openmesh.cloud).
 The model is **narrow by design** — a specialist for an MoE swarm, not a
-general-purpose chat model.
+general-purpose chat model. It expects the system prompt:
+
+```
+You are nix-assistant. Review the Nix config and output ONLY a JSON array: [{"line":int,"severity":"error"|"warning"|"hint","message":str}]
+```
+
+Other prompts will work but output-shape reliability drops.
 
 ## Limitations and known failure modes
 
-- **Does not refuse non-Nix input.** Paste YAML, Python, or prose and v0.1 will
-  still "review" it. v0.2 fixes this with negative training examples.
-- **Pattern coverage is narrow in v0.1** (3 of 15 planned patterns). Errors
-  outside these patterns will not surface correct line numbers; expect schema-
-  valid but semantically weak reviews.
-- **No cross-version awareness** — v0.1 doesn't detect "this option exists
-  in NixOS 24.11 but was renamed in 25.05". v0.3 adds pin-aware review.
-- **Q4_K_M quantization** introduces small quality drift vs. the fp16 adapter
-  (not yet measured precisely; measured in the v0.2 benchmark).
+- **Pattern coverage is 3 of 15 planned classes.** Good on `package_attr_path_drift`, `syntax_error_missing_semicolon`, and `flake_arg_not_destructured`. On out-of-distribution classes (unknown_option, option_wrong_type, redundant_default), v0.2a usually returns `[]` — technically safer than hallucinating, but not helpful. v0.3 closes this gap.
+- **Refusal is partial.** `empty_on_negative` at 60% — the model refuses Python, YAML, bash most of the time but occasionally hallucinates findings on prose or ambiguous inputs. Expanding the negatives pool in v0.3 targets this.
+- **No cross-version awareness.** v0.2a doesn't know that `programs.git.settings` exists on unstable but not on 25.05. A `option_renamed_across_channels` pattern is on the v0.3+ roadmap.
+- **Q4_K_M quantization drift** vs. the fp16 adapter is not yet precisely measured. Expected <3% on the benchmark but to be verified in v0.3.
+- **Single context, single turn.** The model reviews one config at a time. It does not remember prior calls or conversation history.
 
 ## Evaluation code
 
 The full benchmark harness is reproducible from the repo:
 [johnforfar/nix-assistant](https://github.com/johnforfar/nix-assistant) →
-`eval/` directory. Every metric computed by this table can be re-run via
-`python -m eval.run --runner <name>`.
+`eval/` directory. Every row in the table above can be re-run via:
+
+```bash
+python -m eval.run --runner local_adapter \
+  --dataset eval/dataset/v0_seed.jsonl \
+  --out eval/results/v0.2a_qwen_1.5b_lora.json \
+  --version v0.2a_qwen_1.5b_lora
+```
+
+Previous versions are replayable. The 25-case test set, the three baseline runners (`live_xnode`, `local_pipeline`, `local_adapter`), and the rescore utility all ship in the repo.
 
 ## Citation
 
-```
+```bibtex
 @misc{nixreviewer2026,
   title        = {nix-reviewer-1.5b: A specialist Nix config reviewer},
   author       = {Forfar, John},
   year         = {2026},
   publisher    = {Hugging Face},
   howpublished = {\url{https://huggingface.co/OpenxAILabs/nix-reviewer-1.5b}},
-  note         = {Apache-2.0. Fine-tuned from Qwen/Qwen2.5-Coder-1.5B-Instruct.}
+  note         = {Apache-2.0. Fine-tuned from Qwen/Qwen2.5-Coder-1.5B-Instruct on synthetic (broken-config, review) pairs verified by the Nix evaluator.}
 }
 ```
 
@@ -170,4 +198,4 @@ The full benchmark harness is reproducible from the repo:
 
 Apache-2.0. See [LICENSE](https://github.com/johnforfar/nix-assistant/blob/main/LICENSE)
 and [NOTICE](https://github.com/johnforfar/nix-assistant/blob/main/NOTICE) for full
-attribution.
+attribution (upstream: Qwen2.5-Coder base model by Alibaba Cloud; nixpkgs training-pattern references by NixOS contributors).
