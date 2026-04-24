@@ -31,6 +31,7 @@ HTML_TEMPLATE = """<!doctype html>
     }})();
   </script>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script>
     tailwind.config = {{ darkMode: 'class' }};
   </script>
@@ -136,8 +137,10 @@ HTML_TEMPLATE = """<!doctype html>
 
       <div class="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 shadow-sm overflow-hidden">
         <div class="p-5 bg-neutral-50 dark:bg-neutral-950 border-b border-neutral-200 dark:border-neutral-800">
-          <img src="data:image/png;base64,{CHART_B64}" alt="leaderboard chart"
-               class="rounded-lg border border-neutral-200 dark:border-neutral-800 w-full" />
+          <div class="relative h-96">
+            <canvas id="benchmark-chart"></canvas>
+          </div>
+          <p class="text-xs text-neutral-500 mt-3 text-center">Hover a point to see why that version shipped (or didn't).</p>
         </div>
 
         <div class="overflow-x-auto">
@@ -443,6 +446,106 @@ document.getElementById('src').addEventListener('keydown', e => {{
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') doReview();
 }});
 
+// interactive benchmark chart (Chart.js)
+const BENCH_VERSIONS = [
+  'v0 base Qwen 1.5B',
+  'v0 live (hermes3:3b)',
+  'v0.1 LoRA',
+  'v0.2 LoRA (3 epochs)',
+  'v0.2a LoRA · live',
+];
+const BENCH_NOTES = [
+  'Pretrained Qwen2.5-Coder-1.5B with no fine-tune. Emits prose, not JSON — the review pipeline\\'s escape-hatch fired on 100% of cases, producing valid shape but zero signal.',
+  'The production baseline on xnode before we shipped v0.1. statix + deadnix + RAG + hermes3:3b. General chat model tries to review — often confidently mentions an option that isn\\'t even in the input.',
+  'First fine-tune. 445 synthesized pairs across 3 mutation patterns, 3 epochs, Intel Arc XPU via torch-xpu. line_exact jumps 20→90%, no_hallucinated_options hits 100%. Shipped 2026-04-23.',
+  '2.7× more data (1187 pairs) plus the first 37 negatives, 3 epochs. Hit 100% on refusing non-Nix input — but over-fit to refusal: line_exact regressed 90→50%. Kept on HF for reproducibility (tag v0.2); not shipped to xnode.',
+  'Same 1187 pairs as v0.2, retrained at 2 epochs. Recovered v0.1\\'s accuracy AND retained 60% of the negatives win. Best overall. Live on xnode since 2026-04-24.',
+];
+const BENCH_METRICS = [
+  {{ key: 'schema_valid',             color: '#06b6d4', data: [100,   96,   96,   88,   96] }},
+  {{ key: 'no_hallucinated_options',  color: '#ef4444', data: [null, 88.9, 100, null, 100] }},
+  {{ key: 'line_exact',               color: '#f97316', data: [  0,   20,   90,   50,   90] }},
+  {{ key: 'severity_match',           color: '#eab308', data: [ 20,   45,   75,   40,   70] }},
+  {{ key: 'message_keywords_hit',     color: '#3b82f6', data: [  0,   25,   45,   40,   45] }},
+  {{ key: 'empty_on_negative',        color: '#22c55e', data: [  0,    0,    0,  100,   60] }},
+  {{ key: 'dialect_awareness',        color: '#a3e635', data: [100,  100,  100,  100,  100] }},
+];
+
+let benchChart = null;
+function renderBenchChart() {{
+  const canvas = document.getElementById('benchmark-chart');
+  if (!canvas || typeof Chart === 'undefined') return;
+  const isDark = document.documentElement.classList.contains('dark');
+  const grid   = isDark ? '#262626' : '#e5e5e5';
+  const text   = isDark ? '#a3a3a3' : '#525252';
+
+  if (benchChart) benchChart.destroy();
+  benchChart = new Chart(canvas, {{
+    type: 'line',
+    data: {{
+      labels: BENCH_VERSIONS,
+      datasets: BENCH_METRICS.map(m => ({{
+        label: m.key,
+        data: m.data,
+        borderColor: m.color,
+        backgroundColor: m.color + '22',
+        pointBackgroundColor: m.color,
+        pointRadius: 5,
+        pointHoverRadius: 9,
+        borderWidth: 2.5,
+        tension: 0.15,
+        spanGaps: false,
+      }})),
+    }},
+    options: {{
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {{ mode: 'index', intersect: false }},
+      plugins: {{
+        legend: {{ position: 'bottom', labels: {{ color: text, boxWidth: 14, boxHeight: 14 }} }},
+        tooltip: {{
+          backgroundColor: isDark ? '#0a0a0a' : '#ffffff',
+          titleColor:      isDark ? '#fafafa' : '#171717',
+          bodyColor:       isDark ? '#d4d4d4' : '#404040',
+          footerColor:     isDark ? '#a3a3a3' : '#525252',
+          borderColor:     isDark ? '#404040' : '#d4d4d4',
+          borderWidth: 1,
+          padding: 12,
+          callbacks: {{
+            title:     ctx => BENCH_VERSIONS[ctx[0].dataIndex],
+            label:     ctx => `  ${{ctx.dataset.label}}: ${{ctx.parsed.y === null ? 'n/a' : ctx.parsed.y + '%'}}`,
+            afterBody: ctx => ['', BENCH_NOTES[ctx[0].dataIndex]],
+          }},
+          footerFont: {{ weight: 'normal', style: 'italic' }},
+          titleFont:  {{ weight: '600', size: 13 }},
+          bodyFont:   {{ size: 12 }},
+        }},
+      }},
+      scales: {{
+        y: {{
+          min: 0, max: 100,
+          ticks: {{ color: text, callback: v => v + '%' }},
+          grid:  {{ color: grid }},
+          title: {{ display: true, text: 'pass rate (%)', color: text }},
+        }},
+        x: {{
+          ticks: {{ color: text, autoSkip: false, maxRotation: 0 }},
+          grid:  {{ color: grid, display: false }},
+        }},
+      }},
+    }},
+  }});
+}}
+
+// Render on load and re-render on theme toggle
+if (document.readyState === 'loading') {{
+  document.addEventListener('DOMContentLoaded', renderBenchChart);
+}} else {{
+  renderBenchChart();
+}}
+new MutationObserver(() => renderBenchChart())
+  .observe(document.documentElement, {{ attributes: true, attributeFilter: ['class'] }});
+
 // feedback form
 (function() {{
   const form   = document.getElementById('fb-form');
@@ -517,15 +620,12 @@ document.getElementById('src').addEventListener('keydown', e => {{
 
 
 def main() -> int:
-    if not CHART_PNG.exists():
-        print(f"[build-frontend] ERROR: chart not found at {CHART_PNG}")
-        return 1
-    b64 = base64.b64encode(CHART_PNG.read_bytes()).decode("ascii")
-    html = HTML_TEMPLATE.format(CHART_B64=b64)
+    # Interactive Chart.js — no base64 PNG embedded in the HTML anymore.
+    # eval/plot.py still writes eval/chart/leaderboard.png for the model card.
+    html = HTML_TEMPLATE  # plain string, no .format() needed
     OUT_HTML.parent.mkdir(parents=True, exist_ok=True)
     OUT_HTML.write_text(html, encoding="utf-8")
-    print(f"[build-frontend] chart: {len(b64):,} bytes base64")
-    print(f"[build-frontend] HTML : {len(html):,} bytes total")
+    print(f"[build-frontend] HTML : {len(html):,} bytes total (Chart.js interactive)")
     print(f"[build-frontend] wrote -> {OUT_HTML}")
     return 0
 
