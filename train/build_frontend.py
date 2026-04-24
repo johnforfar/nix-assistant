@@ -56,6 +56,7 @@ HTML_TEMPLATE = """<!doctype html>
         <a class="hover:text-neutral-900 dark:hover:text-neutral-100" href="#benchmark">Benchmark</a>
         <a class="hover:text-neutral-900 dark:hover:text-neutral-100 hidden sm:inline" href="#pipeline">How it works</a>
         <a class="hover:text-neutral-900 dark:hover:text-neutral-100 hidden sm:inline" href="#run-locally">Run locally</a>
+        <a class="hover:text-neutral-900 dark:hover:text-neutral-100 hidden sm:inline" href="#feedback">Feedback</a>
         <a class="hover:text-neutral-900 dark:hover:text-neutral-100" href="https://huggingface.co/OpenxAILabs">HuggingFace ↗</a>
         <a class="hover:text-neutral-900 dark:hover:text-neutral-100" href="https://github.com/johnforfar/nix-assistant">GitHub ↗</a>
         <button id="theme-toggle" aria-label="Toggle theme"
@@ -292,6 +293,53 @@ HTML_TEMPLATE = """<!doctype html>
       </div>
     </section>
 
+    <!-- feedback -->
+    <section id="feedback" class="space-y-5">
+      <div>
+        <div class="text-xs font-medium uppercase tracking-wider text-blue-600 dark:text-blue-400">Feedback</div>
+        <h2 class="text-2xl font-semibold tracking-tight mt-1">Send a message</h2>
+        <p class="text-neutral-600 dark:text-neutral-400 mt-1 max-w-2xl text-sm">
+          Bug reports, misses, requests, or "your model hallucinated X" — all useful. Humans and AI agents both welcome. Text only (markdown fine), 2000 chars max, 3 submissions per hour per IP.
+        </p>
+      </div>
+
+      <form id="fb-form" class="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-5 shadow-sm space-y-4">
+        <div>
+          <label class="block text-xs font-medium text-neutral-500 mb-1.5">Name or handle (optional)</label>
+          <input id="fb-name" maxlength="80" autocomplete="off"
+            class="w-full text-sm px-3 h-9 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none" />
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-neutral-500 mb-1.5">Your message</label>
+          <textarea id="fb-msg" rows="5" maxlength="2000" required
+            class="w-full text-sm px-3 py-2 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none resize-y leading-6"
+            placeholder="Tell us what's on your mind..."></textarea>
+          <div class="flex justify-between text-xs text-neutral-500 mt-1">
+            <span>Plain text. HTML/script-ish content is rejected.</span>
+            <span id="fb-count">0 / 2000</span>
+          </div>
+        </div>
+
+        <div class="flex items-end gap-3 flex-wrap">
+          <div class="flex-1 min-w-48">
+            <label class="block text-xs font-medium text-neutral-500 mb-1.5">Quick puzzle (so bots bounce off)</label>
+            <div class="flex items-center gap-2">
+              <span id="fb-prompt" class="text-sm text-neutral-700 dark:text-neutral-300 tabular-nums">loading…</span>
+              <input id="fb-answer" type="number" required min="-20" max="20" step="1"
+                class="w-20 text-sm px-3 h-9 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 text-neutral-800 dark:text-neutral-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 focus:outline-none" />
+            </div>
+          </div>
+          <button id="fb-btn" type="submit"
+            class="inline-flex items-center gap-2 text-sm font-medium px-4 h-9 rounded-md bg-neutral-900 text-white dark:bg-neutral-100 dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 focus:outline-none focus:ring-2 focus:ring-neutral-900/20 disabled:opacity-50 disabled:cursor-not-allowed transition">
+            Send
+          </button>
+        </div>
+
+        <div id="fb-status" class="text-sm"></div>
+      </form>
+    </section>
+
   </main>
 
   <footer class="border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 mt-16">
@@ -392,6 +440,74 @@ document.getElementById('theme-toggle').addEventListener('click', () => {{
 document.getElementById('src').addEventListener('keydown', e => {{
   if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') doReview();
 }});
+
+// feedback form
+(function() {{
+  const form   = document.getElementById('fb-form');
+  const msg    = document.getElementById('fb-msg');
+  const name   = document.getElementById('fb-name');
+  const answer = document.getElementById('fb-answer');
+  const prompt = document.getElementById('fb-prompt');
+  const btn    = document.getElementById('fb-btn');
+  const status = document.getElementById('fb-status');
+  const counter= document.getElementById('fb-count');
+
+  let challengeId = null;
+
+  async function loadChallenge() {{
+    prompt.textContent = 'loading…';
+    try {{
+      const r = await fetch('/api/feedback/challenge');
+      const d = await r.json();
+      challengeId = d.id;
+      prompt.textContent = d.prompt;
+      answer.value = '';
+    }} catch (e) {{
+      prompt.textContent = '(failed to load challenge)';
+    }}
+  }}
+
+  msg.addEventListener('input', () => {{
+    counter.textContent = msg.value.length + ' / 2000';
+  }});
+
+  form.addEventListener('submit', async e => {{
+    e.preventDefault();
+    if (!challengeId) {{ status.textContent = 'challenge not loaded — reload the page'; return; }}
+    status.textContent = '';
+    btn.disabled = true;
+    try {{
+      const r = await fetch('/api/feedback', {{
+        method: 'POST',
+        headers: {{ 'Content-Type': 'application/json' }},
+        body: JSON.stringify({{
+          challenge_id: challengeId,
+          answer: parseInt(answer.value, 10),
+          name: name.value,
+          message: msg.value,
+        }}),
+      }});
+      const d = await r.json();
+      if (d.error) {{
+        status.innerHTML = '<span class="text-red-600 dark:text-red-400">' +
+          escapeHtml('error: ' + d.error) + '</span>';
+        loadChallenge();
+      }} else {{
+        status.innerHTML = '<span class="text-green-700 dark:text-green-400">thanks — feedback received.</span>';
+        msg.value = '';
+        counter.textContent = '0 / 2000';
+        loadChallenge();
+      }}
+    }} catch (e) {{
+      status.innerHTML = '<span class="text-red-600 dark:text-red-400">network error: ' +
+        escapeHtml(e.message) + '</span>';
+    }} finally {{
+      btn.disabled = false;
+    }}
+  }});
+
+  loadChallenge();
+}})();
 </script>
 </body>
 </html>
