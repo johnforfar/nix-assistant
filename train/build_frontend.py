@@ -49,7 +49,7 @@ HTML_TEMPLATE = """<!doctype html>
       <div class="flex items-center gap-2 font-semibold">
         <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
         <span>nix-assistant</span>
-        <span class="ml-2 text-xs font-normal text-neutral-500">v0 · baseline</span>
+        <span class="ml-2 text-xs font-normal text-neutral-500">v0.2a · live</span>
       </div>
       <nav class="flex items-center gap-5 text-sm text-neutral-600 dark:text-neutral-400">
         <a class="hover:text-neutral-900 dark:hover:text-neutral-100" href="#review">Review</a>
@@ -147,22 +147,24 @@ HTML_TEMPLATE = """<!doctype html>
                 <th class="px-5 py-3 font-medium">Metric</th>
                 <th class="px-5 py-3 font-medium text-right">v0 base Qwen 1.5B</th>
                 <th class="px-5 py-3 font-medium text-right">v0 live (hermes3:3b)</th>
-                <th class="px-5 py-3 font-medium text-right bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200">v0.1 LoRA (trained)</th>
+                <th class="px-5 py-3 font-medium text-right">v0.1 LoRA</th>
+                <th class="px-5 py-3 font-medium text-right">v0.2 LoRA (3 ep.)</th>
+                <th class="px-5 py-3 font-medium text-right bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200">v0.2a LoRA · live</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">schema_valid</td><td class="px-5 py-3 text-right tabular-nums text-neutral-500">100%<sup>†</sup></td><td class="px-5 py-3 text-right tabular-nums">96%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium">96%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">no_hallucinated_options</td><td class="px-5 py-3 text-right tabular-nums text-neutral-400 dark:text-neutral-500">n/a</td><td class="px-5 py-3 text-right tabular-nums">88.9%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium text-green-700 dark:text-green-400">100%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">line_exact</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">20%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">90%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">severity_match</td><td class="px-5 py-3 text-right tabular-nums">20%</td><td class="px-5 py-3 text-right tabular-nums">45%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">75%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">message_keywords_hit</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">25%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">45%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">empty_on_negative</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40">0% <span class="text-xs text-neutral-500">(v0.2 target)</span></td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">avg latency</td><td class="px-5 py-3 text-right tabular-nums">5.5 s</td><td class="px-5 py-3 text-right tabular-nums">18 s</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium">3.3 s</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">schema_valid</td><td class="px-5 py-3 text-right tabular-nums text-neutral-500">100%<sup>†</sup></td><td class="px-5 py-3 text-right tabular-nums">96%</td><td class="px-5 py-3 text-right tabular-nums">96%</td><td class="px-5 py-3 text-right tabular-nums">88%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium">96%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">no_hallucinated_options</td><td class="px-5 py-3 text-right tabular-nums text-neutral-400 dark:text-neutral-500">n/a</td><td class="px-5 py-3 text-right tabular-nums">88.9%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">100%</td><td class="px-5 py-3 text-right tabular-nums text-neutral-400 dark:text-neutral-500">n/a</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium text-green-700 dark:text-green-400">100%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">line_exact</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">20%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">90%</td><td class="px-5 py-3 text-right tabular-nums">50%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">90%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">severity_match</td><td class="px-5 py-3 text-right tabular-nums">20%</td><td class="px-5 py-3 text-right tabular-nums">45%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">75%</td><td class="px-5 py-3 text-right tabular-nums">40%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">70%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">message_keywords_hit</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">25%</td><td class="px-5 py-3 text-right tabular-nums">45%</td><td class="px-5 py-3 text-right tabular-nums">40%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold">45%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">empty_on_negative</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">100%<sup>‡</sup></td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 text-green-700 dark:text-green-400">60%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">avg latency</td><td class="px-5 py-3 text-right tabular-nums">5.5 s</td><td class="px-5 py-3 text-right tabular-nums">18 s</td><td class="px-5 py-3 text-right tabular-nums">3.3 s</td><td class="px-5 py-3 text-right tabular-nums">2.0 s</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium">2.9 s</td></tr>
             </tbody>
           </table>
         </div>
         <p class="px-5 py-3 text-xs text-neutral-500 border-t border-neutral-100 dark:border-neutral-800">
-          <sup>†</sup> base Qwen's 100% is illusory — every output triggered the review pipeline's escape-hatch fallback (no real review emitted, valid shape by coincidence). The headline number is <strong>line_exact: 20% → 90%</strong> and <strong>no_hallucinated_options: 100%</strong> — the model never cites a NixOS option path that doesn't exist in the real module tree.
+          <sup>†</sup> base Qwen's 100% is illusory — every output triggered the review pipeline's escape-hatch fallback (no real review emitted, valid shape by coincidence). <sup>‡</sup> v0.2 achieved 100% on negatives but over-fit to refusal (3 epochs), regressing line_exact 90→50. v0.2a re-trained with 2 epochs kept the accuracy and captured 60% of the negatives win — <strong>live on xnode</strong>. Headline across the ladder: <strong>line_exact: 0% → 20% → 90%</strong> and <strong>no_hallucinated_options: 100%</strong> from the trained LoRA onward — the model never cites a NixOS option path that doesn't exist in the real module tree.
         </p>
       </div>
 
