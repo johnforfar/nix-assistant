@@ -73,7 +73,7 @@
 
             environment = {
               NIX_ASSISTANT_DATA  = "/var/lib/nix-assistant";
-              NIX_ASSISTANT_MODEL = "hf.co/OpenxAILabs/nix-reviewer-1.5b-GGUF:Q4_K_M";
+              NIX_ASSISTANT_MODEL = "hf.co/OpenxAILabs/nix-reviewer-1.5b-GGUF:nix-reviewer-v0.4-1.5b-Q4_K_M.gguf";
               OLLAMA_URL          = "http://hermes-ollama.local:11434";
               PORT                = "5000";
               BIND_HOST           = "127.0.0.1";

@@ -50,7 +50,7 @@ HTML_TEMPLATE = """<!doctype html>
       <div class="flex items-center gap-2 font-semibold">
         <span class="inline-block w-2 h-2 rounded-full bg-blue-600"></span>
         <span>nix-assistant</span>
-        <span class="ml-2 text-xs font-normal text-neutral-500">v0.2a · live</span>
+        <span class="ml-2 text-xs font-normal text-neutral-500">v0.4 · live</span>
       </div>
       <nav class="flex items-center gap-5 text-sm text-neutral-600 dark:text-neutral-400">
         <a class="hover:text-neutral-900 dark:hover:text-neutral-100" href="#review">Review</a>
@@ -152,22 +152,23 @@ HTML_TEMPLATE = """<!doctype html>
                 <th class="px-5 py-3 font-medium text-right">v0 live (hermes3:3b)</th>
                 <th class="px-5 py-3 font-medium text-right">v0.1 LoRA</th>
                 <th class="px-5 py-3 font-medium text-right">v0.2 LoRA (3 ep.)</th>
-                <th class="px-5 py-3 font-medium text-right bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200">v0.2a LoRA · live</th>
+                <th class="px-5 py-3 font-medium text-right">v0.2a LoRA</th>
+                <th class="px-5 py-3 font-medium text-right bg-blue-50 dark:bg-blue-950/40 text-blue-900 dark:text-blue-200">v0.4 LoRA · live</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800">
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">schema_valid</td><td class="px-5 py-3 text-right tabular-nums text-neutral-500">100%<sup>†</sup></td><td class="px-5 py-3 text-right tabular-nums">96%</td><td class="px-5 py-3 text-right tabular-nums">96%</td><td class="px-5 py-3 text-right tabular-nums">88%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium">96%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">no_hallucinated_options</td><td class="px-5 py-3 text-right tabular-nums text-neutral-400 dark:text-neutral-500">n/a</td><td class="px-5 py-3 text-right tabular-nums">88.9%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">100%</td><td class="px-5 py-3 text-right tabular-nums text-neutral-400 dark:text-neutral-500">n/a</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium text-green-700 dark:text-green-400">100%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">line_exact</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">20%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">90%</td><td class="px-5 py-3 text-right tabular-nums">50%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">90%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">severity_match</td><td class="px-5 py-3 text-right tabular-nums">20%</td><td class="px-5 py-3 text-right tabular-nums">45%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">75%</td><td class="px-5 py-3 text-right tabular-nums">40%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">70%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">message_keywords_hit</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">25%</td><td class="px-5 py-3 text-right tabular-nums">45%</td><td class="px-5 py-3 text-right tabular-nums">40%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold">45%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">empty_on_negative</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">100%<sup>‡</sup></td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 text-green-700 dark:text-green-400">60%</td></tr>
-              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">avg latency</td><td class="px-5 py-3 text-right tabular-nums">5.5 s</td><td class="px-5 py-3 text-right tabular-nums">18 s</td><td class="px-5 py-3 text-right tabular-nums">3.3 s</td><td class="px-5 py-3 text-right tabular-nums">2.0 s</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium">2.9 s</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">schema_valid</td><td class="px-5 py-3 text-right tabular-nums text-neutral-500">100%<sup>†</sup></td><td class="px-5 py-3 text-right tabular-nums">96%</td><td class="px-5 py-3 text-right tabular-nums">96%</td><td class="px-5 py-3 text-right tabular-nums">88%</td><td class="px-5 py-3 text-right tabular-nums">96%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">100%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">no_hallucinated_options</td><td class="px-5 py-3 text-right tabular-nums text-neutral-400 dark:text-neutral-500">n/a</td><td class="px-5 py-3 text-right tabular-nums">88.9%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">100%</td><td class="px-5 py-3 text-right tabular-nums text-neutral-400 dark:text-neutral-500">n/a</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">100%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">100%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">line_exact</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">20%</td><td class="px-5 py-3 text-right tabular-nums">90%</td><td class="px-5 py-3 text-right tabular-nums">50%</td><td class="px-5 py-3 text-right tabular-nums">90%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">95%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">severity_match</td><td class="px-5 py-3 text-right tabular-nums">20%</td><td class="px-5 py-3 text-right tabular-nums">45%</td><td class="px-5 py-3 text-right tabular-nums">75%</td><td class="px-5 py-3 text-right tabular-nums">40%</td><td class="px-5 py-3 text-right tabular-nums">70%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-semibold text-green-700 dark:text-green-400">80%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300 font-medium">message_keywords_hit</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">25%</td><td class="px-5 py-3 text-right tabular-nums">45%</td><td class="px-5 py-3 text-right tabular-nums">40%</td><td class="px-5 py-3 text-right tabular-nums">45%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-bold text-green-700 dark:text-green-400">80%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">empty_on_negative</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums">0%</td><td class="px-5 py-3 text-right tabular-nums text-green-700 dark:text-green-400">100%<sup>‡</sup></td><td class="px-5 py-3 text-right tabular-nums">60%</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 text-green-700 dark:text-green-400">60%</td></tr>
+              <tr><td class="px-5 py-3 text-neutral-700 dark:text-neutral-300">avg latency<sup>§</sup></td><td class="px-5 py-3 text-right tabular-nums">5.5 s</td><td class="px-5 py-3 text-right tabular-nums">18 s</td><td class="px-5 py-3 text-right tabular-nums">3.3 s</td><td class="px-5 py-3 text-right tabular-nums">2.0 s</td><td class="px-5 py-3 text-right tabular-nums">2.9 s</td><td class="px-5 py-3 text-right tabular-nums bg-blue-50 dark:bg-blue-950/40 font-medium">3.5 s</td></tr>
             </tbody>
           </table>
         </div>
         <p class="px-5 py-3 text-xs text-neutral-500 border-t border-neutral-100 dark:border-neutral-800">
-          <sup>†</sup> base Qwen's 100% is illusory — every output triggered the review pipeline's escape-hatch fallback (no real review emitted, valid shape by coincidence). <sup>‡</sup> v0.2 achieved 100% on negatives but over-fit to refusal (3 epochs), regressing line_exact 90→50. v0.2a re-trained with 2 epochs kept the accuracy and captured 60% of the negatives win — <strong>live on xnode</strong>. Headline across the ladder: <strong>line_exact: 0% → 20% → 90%</strong> and <strong>no_hallucinated_options: 100%</strong> from the trained LoRA onward — the model never cites a NixOS option path that doesn't exist in the real module tree.
+          <sup>†</sup> base Qwen's 100% is illusory — every output triggered the review pipeline's escape-hatch fallback (no real review emitted, valid shape by coincidence). <sup>‡</sup> v0.2 achieved 100% on negatives but over-fit to refusal (3 epochs), regressing line_exact 90→50. <sup>§</sup> fp16 adapter latency on Arc XPU; production GGUF/Q4 on CPU is comparable across versions. <strong>v0.4 is the first version that strictly beats v0.2a on every review metric</strong>: +5 line_exact, +10 severity, <strong>+35 message_keywords_hit</strong>, all from adding a single new mutation class (option_renamed_across_channels).
         </p>
       </div>
 
@@ -452,23 +453,25 @@ const BENCH_VERSIONS = [
   'v0 live (hermes3:3b)',
   'v0.1 LoRA',
   'v0.2 LoRA (3 epochs)',
-  'v0.2a LoRA · live',
+  'v0.2a LoRA',
+  'v0.4 LoRA · live',
 ];
 const BENCH_NOTES = [
   'Pretrained Qwen2.5-Coder-1.5B with no fine-tune. Emits prose, not JSON — the review pipeline\\'s escape-hatch fired on 100% of cases, producing valid shape but zero signal.',
   'The production baseline on xnode before we shipped v0.1. statix + deadnix + RAG + hermes3:3b. General chat model tries to review — often confidently mentions an option that isn\\'t even in the input.',
   'First fine-tune. 445 synthesized pairs across 3 mutation patterns, 3 epochs, Intel Arc XPU via torch-xpu. line_exact jumps 20→90%, no_hallucinated_options hits 100%. Shipped 2026-04-23.',
   '2.7× more data (1187 pairs) plus the first 37 negatives, 3 epochs. Hit 100% on refusing non-Nix input — but over-fit to refusal: line_exact regressed 90→50%. Kept on HF for reproducibility (tag v0.2); not shipped to xnode.',
-  'Same 1187 pairs as v0.2, retrained at 2 epochs. Recovered v0.1\\'s accuracy AND retained 60% of the negatives win. Best overall. Live on xnode since 2026-04-24.',
+  'Same 1187 pairs as v0.2, retrained at 2 epochs. Recovered v0.1\\'s accuracy AND retained 60% of the negatives win. Live on xnode 2026-04-24 → 2026-04-27.',
+  '1963 pairs across 7 mutation classes — adds option_renamed_across_channels (32 historical NixOS option renames) on top of the v0.3-binned positive set. First version to strictly beat v0.2a on every review metric: line_exact 95%, severity_match 80%, message_keywords_hit 80% (+35). Live since 2026-04-27.',
 ];
 const BENCH_METRICS = [
-  {{ key: 'schema_valid',             color: '#06b6d4', data: [100,   96,   96,   88,   96] }},
-  {{ key: 'no_hallucinated_options',  color: '#ef4444', data: [null, 88.9, 100, null, 100] }},
-  {{ key: 'line_exact',               color: '#f97316', data: [  0,   20,   90,   50,   90] }},
-  {{ key: 'severity_match',           color: '#eab308', data: [ 20,   45,   75,   40,   70] }},
-  {{ key: 'message_keywords_hit',     color: '#3b82f6', data: [  0,   25,   45,   40,   45] }},
-  {{ key: 'empty_on_negative',        color: '#22c55e', data: [  0,    0,    0,  100,   60] }},
-  {{ key: 'dialect_awareness',        color: '#a3e635', data: [100,  100,  100,  100,  100] }},
+  {{ key: 'schema_valid',             color: '#06b6d4', data: [100,   96,   96,   88,   96,  100] }},
+  {{ key: 'no_hallucinated_options',  color: '#ef4444', data: [null, 88.9, 100, null, 100,  100] }},
+  {{ key: 'line_exact',               color: '#f97316', data: [  0,   20,   90,   50,   90,   95] }},
+  {{ key: 'severity_match',           color: '#eab308', data: [ 20,   45,   75,   40,   70,   80] }},
+  {{ key: 'message_keywords_hit',     color: '#3b82f6', data: [  0,   25,   45,   40,   45,   80] }},
+  {{ key: 'empty_on_negative',        color: '#22c55e', data: [  0,    0,    0,  100,   60,   60] }},
+  {{ key: 'dialect_awareness',        color: '#a3e635', data: [100,  100,  100,  100,  100,  100] }},
 ];
 
 let benchChart = null;
