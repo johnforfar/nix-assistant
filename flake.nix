@@ -41,6 +41,19 @@
             ${pkgs.curl}/bin/curl -fsSL "$BASE/nixos_options_meta.json" -o "$EMB_DIR/nixos_options_meta.json"
             echo "nix-assistant: embedding index ready."
           fi
+
+          # Ensure the LLM is pulled on the shared hermes-ollama container.
+          # /api/pull is idempotent — it's a fast no-op once the blob is present.
+          # Required because Ollama 0.20.3 does not lazy-pull on /api/chat.
+          MODEL="hf.co/OpenxAILabs/nix-reviewer-1.5b-GGUF:Q4_K_M"
+          OLLAMA_URL="http://hermes-ollama.local:11434"
+          echo "nix-assistant: ensuring $MODEL is on $OLLAMA_URL ..."
+          ${pkgs.curl}/bin/curl -fsS -X POST "$OLLAMA_URL/api/pull" \
+            -H "Content-Type: application/json" \
+            --max-time 1200 \
+            -d "{\"model\":\"$MODEL\",\"stream\":false}" \
+            && echo "nix-assistant: model pull OK" \
+            || echo "nix-assistant: model pull failed (server will return 404 until manual pull)"
         '';
 
         frontendDir = pkgs.runCommand "nix-assistant-frontend" {} ''
